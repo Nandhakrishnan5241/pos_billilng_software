@@ -1,0 +1,8 @@
+1. laravel 11
+2. jquery validation
+3. spatie integration
+4. module has created separately in app folder
+
+commands : 
+*************
+php artisan make:controller App/Modules/Previleges/Controllers/PrevilegeController

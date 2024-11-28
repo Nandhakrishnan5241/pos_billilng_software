@@ -39,8 +39,13 @@ $(document).ready(function () {});
 };
 
 window.getSelectedValues = function () {
-    const selectedRole = document.getElementById("role").value; // Get selected role
-    const checkboxes = document.querySelectorAll(".permission-checkbox"); // All checkboxes
+    const selectedRole = document.getElementById("role").value; 
+    const checkboxes   = document.querySelectorAll(".permission-checkbox"); 
+
+    if(selectedRole == ''){
+        alert('select role and  checkbox');
+        return false;
+    }
 
     const selectedData = [];
 
@@ -53,12 +58,11 @@ window.getSelectedValues = function () {
         }
     });
 
-    console.log("Selected Role:", selectedRole);
-    console.log("Selected Permissions:", selectedData);
+    // console.log("Selected Role:", selectedRole);
+    // console.log("Selected Permissions:", selectedData);
 
     var data = selectedData;
-
-  
+    
     const groupedData = data.reduce((acc, curr) => {
         const module = JSON.parse(curr.module); 
         const slug = module.slug;
@@ -75,7 +79,7 @@ window.getSelectedValues = function () {
         return acc;
     }, {});
 
-    console.log(groupedData)
+    // console.log(groupedData)
     
     // Convert grouped data into an array if needed
     const groupedArray = Object.keys(groupedData).map((slug) => ({
@@ -84,7 +88,34 @@ window.getSelectedValues = function () {
         actions: groupedData[slug].actions,
     }));
     
-    console.log(groupedArray);
+    // console.log(groupedArray);
+    
+    addPrivilegesToTable(selectedRole,groupedArray);
 
     
+}
+
+function addPrivilegesToTable(selectedRole,groupedArray){
+    let data = JSON.stringify(groupedArray);
+    $.get("previleges/addpermission/" + selectedRole + "/" + data, function (response) {
+        
+            if (response.status == 1) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+                window.location.reload();
+            } 
+            else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: response.message,
+                    // footer: '<a href="#">Why do I have this issue?</a>'
+                });
+            }
+    });
 }

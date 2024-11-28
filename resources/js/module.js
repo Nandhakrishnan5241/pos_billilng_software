@@ -6,23 +6,23 @@ $(document).ready(function () {
             name: {
                 required: true,
             },
-            order: {
-                required: true,
-            },
-            status: {
-                required: true,
-            },
+            // order: {
+            //     required: true,
+            // },
+            // status: {
+            //     required: true,
+            // },
         },
         messages: {
             name: {
                 required: "Name field is required",
             },
-            order: {
-                required: "Order field is required",
-            },
-            status: {
-                required: "Status field is required",
-            },
+            // order: {
+            //     required: "Order field is required",
+            // },
+            // status: {
+            //     required: "Status field is required",
+            // },
         },
         highlight: function (element) {
             $(element).addClass("validation");

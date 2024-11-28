@@ -62,6 +62,15 @@
                     <input class="form-control" name="email" type="email" placeholder="Enter the name" id="email" />
                 </div>
                 <div class="mb-3">
+                    <label for="role">Role</label>
+                    <select class="form-select" name="role" id="role">
+                        <option value="" disabled selected>Select a role</option>
+                        @foreach ($roles as $key => $value)
+                            <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label for="userpassword">Password</label>
                     <input class="form-control" name="userpassword" type="text" placeholder="Enter the userpassword" id="userpassword" />
                 </div>

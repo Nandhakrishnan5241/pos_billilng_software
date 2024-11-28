@@ -5,10 +5,13 @@ namespace App\Modules\Module\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Module\Models\Module;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 
 class ModuleController extends Controller
 {
+    public static $tableName = 'modules';
+
     public function index()
     {
         return view('module::index');
@@ -42,14 +45,27 @@ class ModuleController extends Controller
         try {
             $request->validate([
                 'name'   => 'required',
-                'order'  => 'required',
-                'status' => 'required',
+                // 'order'  => 'required',
+                // 'status' => 'required',
             ]);
 
             $name    = $request->input('name');
             $slug    = strtolower(str_replace(' ', '', $name));
-            $order   = $request->input('order');
-            $status  = $request->input('status');
+
+            // $columns = Schema::getColumnListing(ModuleController::$tableName);
+            //  $columnCount = count($columns);
+
+            $lastRecord             = Module::latest('id')->first();
+            if(!empty($lastRecord)){
+                $lastRecordOrderCount   = $lastRecord->order;
+            }
+            else{
+                $lastRecordOrderCount = 0;
+            }
+            
+
+            $order   = ($request->input('order')?? ++$lastRecordOrderCount);
+            $status  = ($request->input('status') ?? '1');
 
 
             $module          = new Module();

@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('users::index');
+        $roles = Role::get();
+        return view('users::index',compact('roles'));
     }
 
     public function save(Request $request)
@@ -21,14 +23,17 @@ class UserController extends Controller
         try {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
+                'role' => 'required',
                 'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
                 'userpassword' => ['required', Rules\Password::defaults()],
             ]);
-            $user = User::create([
+            $role = $request->role;
+            $user   = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->userpassword),
             ]);
+            $user->assignRole([$role]);
 
             return response()->json([
                 'status' => '1',

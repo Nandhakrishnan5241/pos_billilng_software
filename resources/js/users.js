@@ -10,6 +10,9 @@ $(document).ready(function(){
                 required: true, 
                 email: true 
             },
+            role: { 
+                required: true, 
+            },
             userpassword: {
                 required: true,
                 minlength: 8,
@@ -25,6 +28,9 @@ $(document).ready(function(){
             },
             email: {
                 required: "Please enter a valid email address",
+            },
+            role: {
+                required: "Select a role",
             },
             userpassword: {
                 required: "Password field is required",

@@ -53,9 +53,8 @@ Route::prefix('bsadmin/users')->middleware('auth')->group(function(){
 
 Route::prefix('bsadmin/previleges')->middleware('auth')->group(function(){
     Route::get('/', [PrevilegeController::class, 'index']);
-    Route::get('{roleId}/addpermission',[PrevilegeController::class,'addPermissionToRole']);
-    Route::put('{roleId}/givepermissions',[PrevilegeController::class,'givePermissionToRole']);
-   
+    Route::get('/addpermission/{roleId}/{data}',[PrevilegeController::class,'addPermissionToRole']);
+    Route::put('/givepermissions/{roleId{/{data}',[PrevilegeController::class,'givePermissionToRole']);
 });
 
 Route::fallback(function () {

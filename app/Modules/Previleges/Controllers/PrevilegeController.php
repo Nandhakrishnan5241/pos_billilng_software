@@ -5,6 +5,7 @@ namespace App\Modules\Previleges\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Module\Models\Module;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Permission;
@@ -14,26 +15,45 @@ class PrevilegeController extends Controller
 {
     public function index()
     {
-        $roles = Role::get();
+        $roles   = Role::get();
         $modules = Module::get();
+        // $permissions = Permission::get();
         return view('previleges::index', compact("roles","modules"));
+        // return view('previleges::index', compact("roles","modules","permissions"));
     }
-    public function addPermissionToRole($roleId)
+    public function addPermissionToRole($roleId,$groupedData)
     {
-        dd('test');
-        if (!empty($roleId)) {
-            $permissions     = Permission::get();
-            $role            = Role::findOrFail($roleId);
-            $rolePermissions = DB::table('role_has_permissions')
-                ->where('role_has_permissions.role_id', $role->id)
-                ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
-                ->all();
-            $data = [];
-            $data['permissions']     = $permissions;
-            $data['role']            = $role;
-            $data['rolePermissions'] = $rolePermissions;
+        $user = Auth::user();
+        try {
+            $decodeData = json_decode($groupedData,true);
+            $role       = Role::findOrFail($roleId);
+            
+            $permissions = [];
+            foreach ($decodeData as $data) {
+                $moduleSlug = $data['module']['slug'];
+                $actions = $data['actions'];
 
-            return view('roles::addpermission', compact('role', 'permissions', 'rolePermissions'));
+                
+                foreach ($actions as $action) {
+                    $permissionName = "{$moduleSlug}.{$action}";
+                    $permission     = Permission::firstOrCreate(['name' => $permissionName]);
+                    $permissions[]  = $permissionName;    
+                    // $role->givePermissionTo($permissions);   
+                }
+            }
+            $role->syncPermissions($permissions); 
+
+            return response()->json([
+                'status' => '1',
+                'message' => 'Permission for the role was successfully granted....',
+                'data' => [],
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => '0',
+                'message' => 'The role"s assigned permissions failed....',
+                'data' => [],
+            ]);
         }
     }
 

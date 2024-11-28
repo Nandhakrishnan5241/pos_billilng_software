@@ -176,8 +176,8 @@ class CategoryController extends Controller
                 'image' => '<img src="' . Storage::url($category->image) . '" width="100" height="100">',
                 // 'action' => '<a href="' . route('categories.edit', $category->id) . '" class="btn btn-sm btn-primary">Edit</a>',
                 'action' => '
-                    <a href="#" class="btn btn-warning text-dark" data-id="' . $category->id . '" onclick="editCategory(' . $category->id . ')"><i class="fa-solid fa-pen-to-square"></i></a> | 
-                    <a href="#" class="btn btn-danger text-dark" data-id="' . $category->id . '" onclick="deleteCategory(' . $category->id . ')"><i class="fa-solid fa-trash"></i></a>
+                    <a href="#" class="btn  text-dark" data-id="' . $category->id . '" onclick="editCategory(' . $category->id . ')"><i class="fa-solid fa-pen-to-square"></i></a> | 
+                    <a href="#" class="btn  text-dark" data-id="' . $category->id . '" onclick="deleteCategory(' . $category->id . ')"><i class="fa-solid fa-trash"></i></a>
                 ',
             ];
         });

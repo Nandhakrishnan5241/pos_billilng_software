@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Permissions')
+@section('title', 'Manage Previleges')
 <style>
     .validation,
     .validation:focus {
@@ -59,12 +59,12 @@
                         <tr data-row="{{ $index }}">
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $module['name'] }}</td>
-                            <td><input type="checkbox" class="all-checkbox " data-row="{{ $index }}"></td>
-                            <td><input type="checkbox" class="row-checkbox" data-row="{{ $index }}" data-action="create"></td>
-                            <td><input type="checkbox" class="row-checkbox" data-row="{{ $index }}" data-action="view"></td>
-                            <td><input type="checkbox" class="row-checkbox" data-row="{{ $index }}" data-action="edit"></td>
-                            <td><input type="checkbox" class="row-checkbox" data-row="{{ $index }}" data-action="delete"></td>
-                            <td><input type="checkbox" class="disable-checkbox" data-row="{{ $index }}"></td>
+                            <td><input type="checkbox" class="all-checkbox" data-row="{{ $index }}" data-module="{{ $module }}" data-action="all"></td>
+                            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="{{ $index }}" data-module="{{ $module }}" data-action="create"></td>
+                            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="{{ $index }}" data-module="{{ $module }}" data-action="view"></td>
+                            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="{{ $index }}" data-module="{{ $module }}" data-action="edit"></td>
+                            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="{{ $index }}" data-module="{{ $module }}" data-action="delete"></td>
+                            <td><input type="checkbox" class="disable-checkbox" data-row="{{ $index }}" data-action="disable"></td>
                         </tr>
                     @endforeach
 
