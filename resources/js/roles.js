@@ -259,7 +259,7 @@ $("#editRolesForm").on("submit", function (e) {
 });
 
 function getTableData(type) {
-    $('#rolesTable').DataTable({
+    var table = $('#rolesTable').DataTable({
         processing: true,
         serverSide: true,
         stateSave: type === 'initial' ? false : true,
@@ -268,6 +268,14 @@ function getTableData(type) {
             { data: 'name', name: 'name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
+    });
+
+    // Override the default search behavior
+    $('#rolesTable_filter input').unbind(); 
+    $('#rolesTable_filter input').on('keypress', function (e) {
+        if (e.which === 13) { 
+            table.search(this.value).draw(); 
+        }
     });
 }
 

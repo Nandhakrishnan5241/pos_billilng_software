@@ -5,6 +5,7 @@ namespace App\Modules\Users\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules;
@@ -123,14 +124,19 @@ class UserController extends Controller
         $datas = $query->skip($start)->take($limit)->get();
 
         $data = $datas->map(function ($data) {
+            $editAction    = '';
+            $deleteAction  = '';
+            if (Auth::user()->can('users.edit')) {
+                $editAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="editData(' . $data->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
+            }
+            if (Auth::user()->can('users.delete')) {
+                $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="deleteData(' . $data->id . ')"><i class="fa-solid fa-trash"></i></a>';
+            }
             return [
                 'id' => $data->id,
                 'name' => $data->name,
                 'email' => $data->email,
-                'action' => '
-                    <a href="#" class="btn  text-dark" data-id="' . $data->id . '" onclick="editData(' . $data->id . ')"><i class="fa-solid fa-pen-to-square"></i></a> 
-                    <a href="#" class="btn  text-dark" data-id="' . $data->id . '" onclick="deleteData(' . $data->id . ')"><i class="fa-solid fa-trash"></i></a>
-                ',
+                'action' => $editAction . $deleteAction,
             ];
         });
 

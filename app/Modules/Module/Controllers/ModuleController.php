@@ -5,7 +5,9 @@ namespace App\Modules\Module\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Module\Models\Module;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ModuleController extends Controller
@@ -44,7 +46,7 @@ class ModuleController extends Controller
     {
         try {
             $request->validate([
-                'name'   => 'required',
+                'name'   => ['required','unique:'. Module::class],
                 // 'order'  => 'required',
                 // 'status' => 'required',
             ]);
@@ -62,11 +64,8 @@ class ModuleController extends Controller
             else{
                 $lastRecordOrderCount = 0;
             }
-            
-
             $order   = ($request->input('order')?? ++$lastRecordOrderCount);
             $status  = ($request->input('status') ?? '1');
-
 
             $module          = new Module();
             $module->name    = $name;
@@ -81,9 +80,11 @@ class ModuleController extends Controller
                 'data' => [],
             ]);
         } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
                 'status' => '0',
-                'message' => 'Data Saved Failed...',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
         }
@@ -93,23 +94,23 @@ class ModuleController extends Controller
     {
         try {
             $request->validate([
-                'editName'   => 'required',
-                'editOrder' => 'required',
-                'editStatus' => 'required',
+                'editName' => [
+                    'required',
+                    Rule::unique('modules', 'name')->ignore($request->input('id')),
+                ],
             ]);
-
             $id      = $request->input('id');
             $name    = $request->input('editName');
             $slug    = strtolower(str_replace(' ', '', $name));
-            $order   = $request->input('editOrder');
-            $status  = $request->input('editStatus');
+            // $order   = $request->input('editOrder');
+            // $status  = $request->input('editStatus');
 
             $module          = Module::find($id);
 
             $module->name    = $name;
             $module->slug    = $slug;
-            $module->order   = $order;
-            $module->status  = $status;
+            // $module->order   = $order;
+            // $module->status  = $status;
             $module->save();
 
             return response()->json([
@@ -118,9 +119,11 @@ class ModuleController extends Controller
                 'data' => [],
             ]);
         } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
                 'status' => '0',
-                'message' => 'Data Updated Failed...',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
         }
@@ -153,18 +156,25 @@ class ModuleController extends Controller
 
         $modules = $query->skip($start)->take($limit)->get();
 
-    
+        
         $data = $modules->map(function ($module) {
+            $editAction = '';
+            $deleteAction = '';
+            
+            if (Auth::user()->can('modules.edit')) {
+                $editAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="editData(' . $module->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
+            }
+            if (Auth::user()->can('modules.delete')) {
+                $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="deleteData(' . $module->id . ')"><i class="fa-solid fa-trash"></i></a>';
+            }
+
             return [
                 'id' => $module->id,
                 'name' => $module->name,
                 'slug' => $module->slug,
                 'order' => $module->order,
                 'status' => $module->status,
-                'action' => '
-                    <a href="#" class="btn  text-dark" data-id="' . $module->id . '" onclick="editData(' . $module->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>  
-                    <a href="#" class="btn  text-dark" data-id="' . $module->id . '" onclick="deleteData(' . $module->id . ')"><i class="fa-solid fa-trash"></i></a>
-                ',
+                'action' => $editAction . $deleteAction,
             ];
         });
 

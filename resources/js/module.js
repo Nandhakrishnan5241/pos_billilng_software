@@ -172,7 +172,7 @@ $("#editModuleForm").on("submit", function (e) {
 });
 
 function getTableData(type) {
-    $("#modulesTable").DataTable({
+    var table = $("#modulesTable").DataTable({
         processing: true,
         serverSide: true,
         stateSave: type === "initial" ? false : true,
@@ -190,6 +190,14 @@ function getTableData(type) {
             },
         ],
     });
+
+      // Override the default search behavior
+      $('#modulesTable_filter input').unbind(); 
+      $('#modulesTable_filter input').on('keypress', function (e) {
+          if (e.which === 13) { 
+              table.search(this.value).draw(); 
+          }
+      });
 }
 
 // EDIT
@@ -202,8 +210,8 @@ window.editData = function (id) {
         offcanvas.show();
         $("#id").val(data.id);
         $("#editName").val(data.name);
-        $("#editOrder").val(data.order);
-        $("#editStatus").val(data.status);
+        // $("#editOrder").val(data.order);
+        // $("#editStatus").val(data.status);
     });
 };
 

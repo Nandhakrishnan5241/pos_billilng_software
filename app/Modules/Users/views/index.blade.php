@@ -23,12 +23,14 @@
 @section('content')
 
     <div class="mt-4 h4">Manage Users
-        <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add User</button>
+        @if (auth()->user()->can('users.create'))
+            <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add User</button>
+        @endif
     </div>
     <hr>
 
-    <div class="table-responsive">
+    {{-- <div class="table-responsive"> --}}
         <table id="usersTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -41,7 +43,8 @@
                 <!-- Data will be populated by DataTables -->
             </tbody>
         </table>
-    </div>
+    {{-- </div> --}}
+
     {{-- ADD --}}
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"

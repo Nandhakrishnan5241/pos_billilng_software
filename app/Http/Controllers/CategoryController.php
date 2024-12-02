@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
@@ -169,16 +170,20 @@ class CategoryController extends Controller
 
     
         $data = $categories->map(function ($category) {
+            $editAction    = '';
+            $deleteAction  = '';
+            if (Auth::user()->can('categories.edit')) {
+                $editAction = '<a href="#" class="btn text-dark" data-id="' . $category->id . '" onclick="editData(' . $category->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
+            }
+            if (Auth::user()->can('categories.delete')) {
+                $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $category->id . '" onclick="deleteData(' . $category->id . ')"><i class="fa-solid fa-trash"></i></a>';
+            }
             return [
                 'id' => $category->id,
                 'name' => $category->name,
                 'description' => $category->description,
                 'image' => '<img src="' . Storage::url($category->image) . '" width="100" height="100">',
-                // 'action' => '<a href="' . route('categories.edit', $category->id) . '" class="btn btn-sm btn-primary">Edit</a>',
-                'action' => '
-                    <a href="#" class="btn  text-dark" data-id="' . $category->id . '" onclick="editCategory(' . $category->id . ')"><i class="fa-solid fa-pen-to-square"></i></a> | 
-                    <a href="#" class="btn  text-dark" data-id="' . $category->id . '" onclick="deleteCategory(' . $category->id . ')"><i class="fa-solid fa-trash"></i></a>
-                ',
+                'action' => $editAction . $deleteAction,
             ];
         });
 

@@ -159,7 +159,7 @@ $(document).ready(function () {
 });
 
 function getTableData(type) {
-    $('#categories-table').DataTable({
+    var table = $('#categories-table').DataTable({
         processing: true,
         serverSide: true,
         stateSave: type === 'initial' ? false : true,
@@ -171,10 +171,18 @@ function getTableData(type) {
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
     });
+
+    // Override the default search behavior
+    $('#categories-table_filter input').unbind(); 
+    $('#categories-table_filter input').on('keypress', function (e) {
+        if (e.which === 13) { 
+            table.search(this.value).draw(); 
+        }
+    });
 }
 
 // EDIT
-window.editCategory = function(id) {
+window.editData = function(id) {
     $.get( 'category/' +id + '/edit', function(data) {
         console.log(data)
         
@@ -191,7 +199,7 @@ window.editCategory = function(id) {
 };
 
 // DELETE
-window.deleteCategory = function(id) {
+window.deleteData = function(id) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You would like to delete this Category",

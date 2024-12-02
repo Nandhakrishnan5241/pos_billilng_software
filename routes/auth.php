@@ -19,6 +19,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+        
         // bs admin get
     Route::get('bsadmin/login', [AuthenticatedSessionController::class, 'create'])
         ->name('bsadmin.login');

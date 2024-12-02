@@ -4,6 +4,7 @@ namespace App\Modules\Permissions\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Permission;
 
@@ -112,13 +113,18 @@ class PermissionController extends Controller
         $datas = $query->skip($start)->take($limit)->get();
 
         $data = $datas->map(function ($data) {
+            $editAction    = '';
+            $deleteAction  = '';
+            if (Auth::user()->can('permissions.edit')) {
+                $editAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="editData(' . $data->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
+            }
+            if (Auth::user()->can('permissions.delete')) {
+                $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="deleteData(' . $data->id . ')"><i class="fa-solid fa-trash"></i></a>';
+            }
             return [
                 'id' => $data->id,
                 'name' => $data->name,
-                'action' => '
-                    <a href="#" class="btn  text-dark" data-id="' . $data->id . '" onclick="editData(' . $data->id . ')"><i class="fa-solid fa-pen-to-square"></i></a> 
-                    <a href="#" class="btn  text-dark" data-id="' . $data->id . '" onclick="deleteData(' . $data->id . ')"><i class="fa-solid fa-trash"></i></a>
-                ',
+                'action' => $editAction . $deleteAction,
             ];
         });
 

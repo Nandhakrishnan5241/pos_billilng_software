@@ -192,7 +192,7 @@ $("#editUserForm").on("submit", function (e) {
 });
 
 function getTableData(type) {
-    $('#usersTable').DataTable({
+    var table = $('#usersTable').DataTable({
         processing: true,
         serverSide: true,
         stateSave: type === 'initial' ? false : true,
@@ -202,6 +202,14 @@ function getTableData(type) {
             { data: 'email', name: 'email' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
+    });
+
+    // Override the default search behavior
+    $('#usersTable_filter input').unbind(); 
+    $('#usersTable_filter input').on('keypress', function (e) {
+        if (e.which === 13) { 
+            table.search(this.value).draw(); 
+        }
     });
 }
 

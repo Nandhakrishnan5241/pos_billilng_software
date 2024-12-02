@@ -31,27 +31,28 @@
 @section('content')
 
     <div class="mt-4 h4">Manage Category
-        {{-- <a href="{{ url('category') }}" class="btn btn-danger float-end">Back</a> --}}
-        <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Category</button>
+        @if (auth()->user()->can('categories.create'))
+            <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Category</button>
+        @endif
     </div>
     <hr>
 
-    <div class="table-responsive">
-        <table id="categories-table" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Image</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be populated by DataTables -->
-            </tbody>
-        </table>
-    </div>
+    {{-- <div class="table-responsive"> --}}
+    <table id="categories-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be populated by DataTables -->
+        </tbody>
+    </table>
+    {{-- </div> --}}
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
         style="width: 50%">
@@ -108,11 +109,12 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form id="editCategoryForm" action="{{ route('category.update') }}" method="POST" enctype="multipart/form-data">
+            <form id="editCategoryForm" action="{{ route('category.update') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="form-floating mb-3">
                     <input class="form-control" name="id" type="hidden" placeholder="" id="id" />
-                    <input class="form-control" name="currentImage" id="currentImage" type="hidden" placeholder=""/>
+                    <input class="form-control" name="currentImage" id="currentImage" type="hidden" placeholder="" />
                     <input class="form-control" name="editName" type="text" placeholder="Enter the category name"
                         id="editName" />
                     <label for="editName">Category Name</label>

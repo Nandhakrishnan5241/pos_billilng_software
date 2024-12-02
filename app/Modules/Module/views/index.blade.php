@@ -22,12 +22,14 @@
 @section('content')
 
     <div class="mt-4 h4">Manage Modules
-        <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Module</button>
+        @if (auth()->user()->can('modules.create'))
+            <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Module</button>
+        @endif
     </div>
     <hr>
 
-    <div class="table-responsive">
+    {{-- <div class="table-responsive"> --}}
         <table id="modulesTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -42,7 +44,7 @@
                 <!-- Data will be populated by DataTables -->
             </tbody>
         </table>
-    </div>
+    {{-- </div> --}}
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
         style="width: 50%">
@@ -99,7 +101,7 @@
                         id="editName" />
 
                 </div>
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label for="name">Module Order</label>
                     <input class="form-control" name="editOrder" type="number" placeholder="Enter the module order"
                         id="editOrder" />
@@ -112,7 +114,7 @@
                         <option value="0">Disable</option>
                         <option value="1">Enable</option>
                     </select>
-                </div>
+                </div> --}}
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Update</button>                 
                 </div>        
