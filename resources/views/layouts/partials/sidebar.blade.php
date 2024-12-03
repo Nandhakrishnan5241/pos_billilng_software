@@ -65,6 +65,7 @@
                             </a>
                         </nav>
                     @endif
+                    
                     @if (auth()->user()->can('users.view'))
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ url('bsadmin/users') }}">
@@ -98,6 +99,6 @@
     </div>
     <div class="sb-sidenav-footer">
         <div class="small">Logged in as:</div>
-        Start Bootstrap
+        <b class="text-uppercase">{{ auth()->user()->name}}</b>
     </div>
 </nav>

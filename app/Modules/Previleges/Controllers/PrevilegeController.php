@@ -69,6 +69,7 @@ class PrevilegeController extends Controller
         try {
             $decodeData = json_decode($groupedData, true);
             $role       = Role::findOrFail($roleId);
+            
 
             $permissions = [];
             foreach ($decodeData as $data) {

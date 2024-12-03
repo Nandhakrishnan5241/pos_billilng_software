@@ -25,7 +25,6 @@ class UserSeeder extends Seeder
                 'password'  => $hashPassword,                   
             ]);
             $this->command->info('Superadmin created successfully.');
-            // $superAdminRole   = Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
             $superAdminRole   = Role::firstOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
             $user->assignRole([$superAdminRole->id]);
         }
