@@ -88,7 +88,7 @@
                 {{-- <div class="collapse" id="collapseCategory" aria-labelledby="headingOne"
                     data-bs-parent="#sidenavAccordion"> --}}
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ url('category') }}">Manage Category</a>
+                        <a class="nav-link" href="{{ url('bsadmin/category') }}">Manage Category</a>
                     </nav>
                 {{-- </div> --}}
             @endif

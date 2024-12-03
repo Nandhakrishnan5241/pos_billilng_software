@@ -23,7 +23,7 @@
 @section('content')
 
     <div class="mt-4 h4">Manage Users
-        @if (auth()->user()->can('users.create'))
+        @if (auth()->user()->can('users.create') || (auth()->user()->hasRole('superadmin')))
             <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add User</button>
         @endif

@@ -158,15 +158,18 @@ class ModuleController extends Controller
 
         
         $data = $modules->map(function ($module) {
-            $editAction = '';
-            $deleteAction = '';
-            
-            if (Auth::user()->can('modules.edit')) {
+            $editAction   = '';
+            $deleteAction = '';            
+            if (Auth::user()->can('modules.edit') || Auth::user()->hasRole('superadmin')) {
                 $editAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="editData(' . $module->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
             }
-            if (Auth::user()->can('modules.delete')) {
+            if (Auth::user()->can('modules.delete') || Auth::user()->hasRole('superadmin')) {
                 $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="deleteData(' . $module->id . ')"><i class="fa-solid fa-trash"></i></a>';
             }
+            // $editAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="editData(' . $module->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
+
+            // $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="deleteData(' . $module->id . ')"><i class="fa-solid fa-trash"></i></a>';
+
 
             return [
                 'id' => $module->id,

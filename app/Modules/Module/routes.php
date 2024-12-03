@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('bsadmin/module')->middleware('auth')->group(function(){
+    // Route::get('/', [ModuleController::class, 'index']);
     Route::get('/', [ModuleController::class, 'index'])->middleware('check.permission:modules.view');
     Route::get('/getdetails', [ModuleController::class, 'getDetails'])->name('module.getdetails');
     Route::post('/save', [ModuleController::class, 'save'])->name('module.save');
@@ -19,6 +20,7 @@ Route::prefix('bsadmin/module')->middleware('auth')->group(function(){
 });
 
 Route::prefix('bsadmin/permissions')->middleware('auth')->group(function(){
+    // Route::get('/', [PermissionController::class, 'index']);
     Route::get('/', [PermissionController::class, 'index'])->middleware('check.permission:permissions.view');
     Route::get('/getdetails', [PermissionController::class, 'getDetails'])->name('permissions.getdetails');
     Route::post('/save', [PermissionController::class, 'save'])->name('permissions.save');
@@ -29,6 +31,7 @@ Route::prefix('bsadmin/permissions')->middleware('auth')->group(function(){
 });
 
 Route::prefix('bsadmin/roles')->middleware('auth')->group(function(){
+    // Route::get('/', [RolesController::class, 'index']);
     Route::get('/', [RolesController::class, 'index'])->middleware('check.permission:roles.view');
     Route::get('/getdetails', [RolesController::class, 'getDetails'])->name('roles.getdetails');
     Route::post('/save', [RolesController::class, 'save'])->name('roles.save');
@@ -38,6 +41,7 @@ Route::prefix('bsadmin/roles')->middleware('auth')->group(function(){
 });
 
 Route::prefix('bsadmin/users')->middleware('auth')->group(function(){
+    // Route::get('/', [UserController::class, 'index']);
     Route::get('/', [UserController::class, 'index'])->middleware('check.permission:users.view');
     Route::get('/getdetails', [UserController::class, 'getDetails'])->name('users.getdetails');
     Route::post('/save', [UserController::class, 'save'])->name('users.save');
@@ -48,6 +52,7 @@ Route::prefix('bsadmin/users')->middleware('auth')->group(function(){
 });
 
 Route::prefix('bsadmin/previleges')->middleware('auth')->group(function(){
+    // Route::get('/', [PrevilegeController::class, 'index']);
     Route::get('/', [PrevilegeController::class, 'index'])->middleware('check.permission:previleges.view');
     Route::get('/addpermission/{roleId}/{data}',[PrevilegeController::class,'addPermissionToRole']);
     Route::put('/givepermissions/{roleId{/{data}',[PrevilegeController::class,'givePermissionToRole']);

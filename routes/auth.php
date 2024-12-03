@@ -17,8 +17,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
+    Route::get('login', function(){
+        return redirect('bsadmin/login');
+    })->name('login');
+    // Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    //     ->name('login');
         
         // bs admin get
     Route::get('bsadmin/login', [AuthenticatedSessionController::class, 'create'])

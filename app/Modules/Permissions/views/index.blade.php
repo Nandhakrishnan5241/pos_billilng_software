@@ -23,7 +23,7 @@
 @section('content')
 
     <div class="mt-4 h4">Manage Permissions
-        @if (auth()->user()->can('permissions.create'))
+        @if (auth()->user()->can('permissions.create') || (auth()->user()->hasRole('superadmin')))
             <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Permission</button>
             @endif

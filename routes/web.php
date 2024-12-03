@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', function () {
+    return redirect('bsadmin/dashboard');
     return view('admin.dashboard');
 })->middleware(['auth', 'verified']);
 
@@ -24,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('category')->middleware('auth')->group(function(){
+Route::prefix('bsadmin/category')->middleware('auth')->group(function(){
     Route::get('/', [CategoryController::class, 'index'])->middleware('check.permission:categories.view');
     Route::get('/getdetails', [CategoryController::class, 'getDetails'])->name('category.getdetails');
     Route::get('/add', [CategoryController::class, 'add'])->name('category.add');

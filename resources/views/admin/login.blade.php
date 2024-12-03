@@ -21,7 +21,7 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4" style="max-width: 400px; width: 100%;">
         <h3 class="text-center mb-4">Login</h3>
-        <form method="POST" action="{{ route('bsadmin.login') }}" id="loginForm">
+        <form method="POST" action="{{ route('login') }}" id="loginForm">
             @csrf
 
             <!-- Email Address -->

@@ -172,10 +172,10 @@ class CategoryController extends Controller
         $data = $categories->map(function ($category) {
             $editAction    = '';
             $deleteAction  = '';
-            if (Auth::user()->can('categories.edit')) {
+            if (Auth::user()->can('categories.edit') || Auth::user()->hasRole('superadmin')) {
                 $editAction = '<a href="#" class="btn text-dark" data-id="' . $category->id . '" onclick="editData(' . $category->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
             }
-            if (Auth::user()->can('categories.delete')) {
+            if (Auth::user()->can('categories.delete') || Auth::user()->hasRole('superadmin')) {
                 $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $category->id . '" onclick="deleteData(' . $category->id . ')"><i class="fa-solid fa-trash"></i></a>';
             }
             return [

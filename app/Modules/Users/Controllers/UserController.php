@@ -126,10 +126,10 @@ class UserController extends Controller
         $data = $datas->map(function ($data) {
             $editAction    = '';
             $deleteAction  = '';
-            if (Auth::user()->can('users.edit')) {
+            if (Auth::user()->can('users.edit') || Auth::user()->hasRole('superadmin')) {
                 $editAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="editData(' . $data->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
             }
-            if (Auth::user()->can('users.delete')) {
+            if (Auth::user()->can('users.delete') || Auth::user()->hasRole('superadmin')) {
                 $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="deleteData(' . $data->id . ')"><i class="fa-solid fa-trash"></i></a>';
             }
             return [

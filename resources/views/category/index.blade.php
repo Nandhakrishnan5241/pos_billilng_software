@@ -31,7 +31,7 @@
 @section('content')
 
     <div class="mt-4 h4">Manage Category
-        @if (auth()->user()->can('categories.create'))
+        @if (auth()->user()->can('categories.create') || (auth()->user()->hasRole('superadmin')))
             <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add Category</button>
         @endif
