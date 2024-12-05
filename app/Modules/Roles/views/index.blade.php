@@ -19,7 +19,6 @@
 <script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
 
 @vite(['resources/js/roles.js'])
-@vite(['resources/js/previleges.js'])
 
 @section('content')
 

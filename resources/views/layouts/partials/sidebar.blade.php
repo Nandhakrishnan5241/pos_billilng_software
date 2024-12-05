@@ -74,6 +74,15 @@
                             </a>
                         </nav>
                     @endif
+
+                    @if (auth()->user()->can('clients.view'))
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="{{ url('bsadmin/clients') }}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
+                            Clients
+                        </a>
+                    </nav>
+                @endif
                 </div>
 
             @endif

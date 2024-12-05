@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Clients\Controllers\ClientController;
 use App\Modules\Module\Controllers\ModuleController;
 use App\Modules\Permissions\Controllers\PermissionController;
 use App\Modules\Previleges\Controllers\PrevilegeController;
@@ -48,6 +49,17 @@ Route::prefix('bsadmin/users')->middleware('auth')->group(function(){
     Route::post('/update', [UserController::class, 'update'])->name('users.update');
     Route::get('{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::get('/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
+   
+});
+
+Route::prefix('bsadmin/clients')->middleware('auth')->group(function(){
+    // Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [ClientController::class, 'index'])->middleware('check.permission:clients.view');
+    Route::get('/getdetails', [ClientController::class, 'getDetails'])->name('clients.getdetails');
+    Route::post('/save', [ClientController::class, 'save'])->name('clients.save');
+    Route::post('/update', [ClientController::class, 'update'])->name('clients.update');
+    Route::get('{id}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+    Route::get('/delete/{id}', [ClientController::class, 'delete'])->name('clients.delete');
    
 });
 

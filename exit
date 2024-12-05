@@ -1,0 +1,21 @@
+[1mdiff --git a/database/migrations/0001_01_01_000000_create_users_table.php b/database/migrations/0001_01_01_000000_create_users_table.php[m
+[1mindex 05fb5d9..c933fd2 100644[m
+[1m--- a/database/migrations/0001_01_01_000000_create_users_table.php[m
+[1m+++ b/database/migrations/0001_01_01_000000_create_users_table.php[m
+[36m@@ -13,12 +13,16 @@[m [mpublic function up(): void[m
+     {[m
+         Schema::create('users', function (Blueprint $table) {[m
+             $table->id();[m
+[32m+[m[32m            $table->unsignedBigInteger('client_id');[m
+             $table->string('name');[m
+             $table->string('email')->unique();[m
+[32m+[m[32m            $table->string('display_name')->nullable();[m
+[32m+[m[32m            $table->string('phone')->nullable();[m
+             $table->timestamp('email_verified_at')->nullable();[m
+             $table->string('password');[m
+             $table->rememberToken();[m
+             $table->timestamps();[m
+[32m+[m[32m            $table->softDeletes();[m
+         });[m
+ [m
+         Schema::create('password_reset_tokens', function (Blueprint $table) {[m

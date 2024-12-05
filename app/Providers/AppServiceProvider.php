@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         View::addNamespace('permissions', base_path('app/modules/permissions/views'));
         View::addNamespace('roles', base_path('app/modules/roles/views'));
         View::addNamespace('users', base_path('app/modules/users/views'));
+        View::addNamespace('clients', base_path('app/modules/clients/views'));
         View::addNamespace('previleges', base_path('app/modules/previleges/views'));
 
      
