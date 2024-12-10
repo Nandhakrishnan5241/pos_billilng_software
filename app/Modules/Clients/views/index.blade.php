@@ -62,7 +62,7 @@
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
         style="width: 50%">
         <div class="offcanvas-header">
-            <h5 id="offcanvasRightLabel">Create Role</h5>
+            <h5 id="offcanvasRightLabel">Create Client</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
@@ -102,10 +102,10 @@
                             <input class="form-check-input" type="checkbox" name="subscribe" id="subscribe">
                             <label class="form-check-label" for="subscribe">Subscribe</label>
                         </div>
-                        <div class="form-check form-switch">
+                        {{-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" name="superadmin" id="superadmin">
                             <label class="form-check-label" for="superadmin">Super Admin</label>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="mt-4 mb-0">
                         <button class="btn btn-primary float-end" type="submit">Save</button>
@@ -164,10 +164,10 @@
                             <input class="form-check-input" type="checkbox" name="editSubscribe" id="editSubscribe">
                             <label class="form-check-label" for="editSubscribe">Subscribe</label>
                         </div>
-                        <div class="form-check form-switch">
+                        {{-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" name="editSuperadmin" id="editSuperadmin">
                             <label class="form-check-label" for="editSuperadmin">Super Admin</label>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="mt-4 mb-0">
                         <button class="btn btn-primary float-end" type="submit">Save</button>

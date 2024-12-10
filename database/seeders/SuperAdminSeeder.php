@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Client;
+
 use App\Models\User;
+use App\Modules\Clients\Models\Client;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -49,6 +50,7 @@ class SuperAdminSeeder extends Seeder
             ]);
             $this->command->info('Superadmin created successfully.');
             $superAdminRole   = Role::firstOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
+            Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
             $user->assignRole([$superAdminRole->id]);
         }
         else{

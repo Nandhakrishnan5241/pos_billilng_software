@@ -221,9 +221,13 @@ window.editData = function (id) {
             document.getElementById("editOffCanvasRight")
         );
         offcanvas.show();
+
         $("#id").val(data.id);
         $("#editName").val(data.name);
         $("#editEmail").val(data.email);
+        $("#editDisplayName").val(data.display_name);
+        $("#editPhone").val(data.phone);
+        $('#editRole').val(data.role);
     });
 };
 

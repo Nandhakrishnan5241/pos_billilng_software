@@ -89,9 +89,9 @@ $(document).ready(function () {
             var formData = new FormData(
                 document.getElementById("addClientForm")
             );
-            var superadmin = $("#superadmin").is(":checked") ? 1 : 0;
+            // var superadmin = $("#superadmin").is(":checked") ? 1 : 0;
+            // formData.append("superadmin", superadmin);
             var subscribe = $("#subscribe").is(":checked") ? 1 : 0;
-            formData.append("superadmin", superadmin);
             formData.append("subscribe", subscribe);
 
             $.ajax({
@@ -310,13 +310,18 @@ window.editData = function (id) {
             document.getElementById("editOffCanvasRight")
         );
         offcanvas.show();
-        console.log(data);
+
         $("#id").val(data.id);
         $("#editName").val(data.company_name);
         $("#editEmail").val(data.email);
         $("#editMobile").val(data.mobile);
         $("#editAddress").val(data.primary_address);
         $("#currentImage").val(data.company_logo);
+        if (data.is_subscribed === 1) {
+            $("#editSubscribe").prop("checked", true); 
+        } else {
+            $("#editSubscribe").prop("checked", false); 
+        }
         $("#editImagePreview").attr("src", data.company_logo);
         $(".image-container").show();
     });

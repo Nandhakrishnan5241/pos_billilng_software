@@ -61,6 +61,10 @@
                     <input class="form-control" name="name" type="text" placeholder="Enter the name" id="name" />
                 </div>
                 <div class="mb-3">
+                    <label for="displayName">Display Name</label>
+                    <input class="form-control" name="displayName" type="text" placeholder="Enter the displayName" id="displayName" />
+                </div>
+                <div class="mb-3">
                     <label for="email">Email</label>
                     <input class="form-control" name="email" type="email" placeholder="Enter the name" id="email" />
                 </div>
@@ -72,6 +76,11 @@
                             <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="mb-3">
+                    <label for="phone">Mobile</label>
+                    <input class="form-control" name="phone" type="number" placeholder="Enter the mobile"
+                        id="phone" />
                 </div>
                 <div class="mb-3">
                     <label for="userpassword">Password</label>
@@ -93,7 +102,7 @@
     <div class="offcanvas offcanvas-end" tabindex="-1" id="editOffCanvasRight" aria-labelledby="editOffcanvasRightLabel"
         style="width: 50%">
         <div class="offcanvas-header">
-            <h5 id="editOffcanvasRightLabel">Update Role</h5>
+            <h5 id="editOffcanvasRightLabel">Update User</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
@@ -101,12 +110,31 @@
                 @csrf
                 <div class="mb-3">
                     <input name="id" type="hidden" placeholder="" id="id" />
+
                     <label for="name">Name</label>
                     <input class="form-control" name="editName" type="text" placeholder="Enter the name" id="editName" />
                 </div>
                 <div class="mb-3">
+                    <label for="editDisplayName">Display Name</label>
+                    <input class="form-control" name="editDisplayName" type="text" placeholder="Enter the editDisplayName" id="editDisplayName" />
+                </div>
+                <div class="mb-3">
                     <label for="email">Email</label>
                     <input class="form-control" name="editEmail" type="email" placeholder="Enter the name" id="editEmail" />
+                </div>
+                <div class="mb-3">
+                    <label for="editRole">Role</label>
+                    <select class="form-select" name="editRole" id="editRole">
+                        <option value="" disabled selected>Select a role</option>
+                        @foreach ($roles as $key => $value)
+                            <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="editPhone">Mobile</label>
+                    <input class="form-control" name="editPhone" type="number" placeholder="Enter the mobile"
+                        id="editPhone" />
                 </div>
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Save</button>                 
