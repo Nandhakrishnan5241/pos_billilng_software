@@ -1,6 +1,7 @@
 <!-- Session Status -->
 <x-auth-session-status class="mb-4" :status="session('status')" />
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
@@ -21,7 +22,8 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4" style="max-width: 400px; width: 100%;">
         <h3 class="text-center mb-4">Login</h3>
-        <form method="POST" action="{{ route('login') }}" id="loginForm">
+        {{-- <form method="POST" action="{{ route('login') }}" id="loginForm"> --}}
+        <form method="POST" action="{{ route('bsadmin.login') }}" id="loginForm">
             @csrf
 
             <!-- Email Address -->
@@ -30,37 +32,39 @@
                 <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}"
                     autofocus autocomplete="username">
                 @error('email')
-                    <div class="text-danger mt-1">{{ $message }}</div>
+                    {{-- <div class="text-danger mt-1">{{ $message }}</div> --}}
+                    <div class="alert alert-danger">
+                        {{ $message }}
+                    </div>
                 @enderror
-            </div>
 
-            <!-- Password -->
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="password" class="form-control"
-                    autocomplete="current-password">
-                @error('password')
-                    <div class="text-danger mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        autocomplete="current-password">
+                    @error('password')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
 
-            <!-- Remember Me -->
-            {{-- <div class="form-check mb-3">
+                <!-- Remember Me -->
+                {{-- <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="remember_me" name="remember">
                 <label class="form-check-label" for="remember_me">
                     Remember me
                 </label>
             </div> --}}
 
-            <!-- Forgot Password and Submit Button -->
-            <div class="d-flex justify-content-between align-items-center">
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-decoration-none small">
-                        Forgot your password?
-                    </a>
-                @endif
-                <button type="submit" class="btn btn-dark">Log In</button>
-            </div>
+                <!-- Forgot Password and Submit Button -->
+                <div class="d-flex justify-content-between align-items-center">
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="text-decoration-none small">
+                            Forgot your password?
+                        </a>
+                    @endif
+                    <button type="submit" class="btn btn-dark">Log In</button>
+                </div>
         </form>
     </div>
 </div>
