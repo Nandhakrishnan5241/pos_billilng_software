@@ -54,7 +54,6 @@ class ClientController extends Controller
             return true;
         } catch (\Exception $e) {
             return false;
-            
         }
     }
 
@@ -62,7 +61,7 @@ class ClientController extends Controller
     {
         try {
             $request->validate([
-                'name' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255', 'unique:' . Client::class . ',company_name'],
                 'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . Client::class],
                 'mobile' => 'required',
                 'address' => 'required',
@@ -90,49 +89,138 @@ class ClientController extends Controller
             $client->primary_address   = $address;
             $client->timezone_id       = time();
 
+
             $client->save();
 
-            $password     = Str::random(8) . '@' . rand(100, 999);
+            // $password     = Str::random(8) . '@' . rand(100, 999);
+            $password     = '12345678';
             $hashPassword =  Hash::make($password);
 
-            $clientID = $client->id;
-
+            $clientID      = $client->id;
             $role          = 'admin';
 
-            $user = new User();
-            $user->client_id = $clientID;
-            $user->name = $name;
-            $user->email = $email;
-            $user->display_name = $name;
-            $user->password = $hashPassword;
-            $user->phone = $mobile;
-            $user->primary_admin = 1;
-            $user->save();
+            // ClientController::createUserForClient($clientID);
 
-            $user->assignRole([$role]);
+            if ($clientID) {
+                try {
+                    $request->validate([
+                        'name' => [
+                            'required',
+                            'string',
+                            Rule::unique('users', 'name')
+                                ->where('client_id', $clientID)
+                                ->ignore($clientID),
+                        ],
+                        'email' => [
+                            'required',
+                            'email',
+                            Rule::unique('users', 'email')
+                                ->where('client_id', $clientID)
+                                ->ignore($clientID),
+                        ],
+                    ]);
+                    $user = new User();
+                    $user->client_id       = $clientID;
+                    $user->name            = $name;
+                    $user->email           = $email;
+                    $user->display_name    = $name;
+                    $user->password        = $hashPassword;
+                    $user->phone           = $mobile;
+                    $user->primary_admin   = 1;
+                    $user->save();
 
+                    $user->assignRole([$role]);
 
-            SendClientDetails::dispatch($user, $password);
-
+                    SendClientDetails::dispatch($user, $password);
+                } catch (ValidationException $e) {
+                    $errors      = $e->validator->errors();
+                    $allMessages = $errors->all();
+                    return response()->json([
+                        'status' => '0',
+                        'message' => $allMessages[0],
+                        'data' => [],
+                    ]);
+                }
+            }
             return response()->json([
                 'status' => '1',
                 'message' => 'Data Saved Successfully...',
                 'data' => [],
             ]);
         } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
                 'status' => '0',
-                'message' => 'Data Saved Failed...',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
         }
     }
+
+    // public static function createUserForClient(Request $request, $clientID){
+    //     $role = 'admin';
+    //     if($clientID){
+    //         try{
+    //             $request->validate([
+    //                 'name' => [
+    //                     'required',
+    //                     'string',
+    //                     Rule::unique('users', 'name')
+    //                         ->where('client_id', $clientID)
+    //                         ->ignore($clientID),
+    //                 ],
+    //                 'email' => [
+    //                     'required',
+    //                     'email',
+    //                     Rule::unique('users', 'email')
+    //                         ->where('client_id', $clientID)
+    //                         ->ignore($clientID),
+    //                 ],
+    //             ]);
+    //             $user = new User();
+    //             $user->client_id       = $clientID;
+    //             $user->name            = $name;
+    //             $user->email           = $email;
+    //             $user->display_name    = $name;
+    //             $user->password        = $hashPassword;
+    //             $user->phone           = $mobile;
+    //             $user->primary_admin   = 1;
+    //             $user->save();
+
+    //             $user->assignRole([$role]);
+
+    //             SendClientDetails::dispatch($user, $password);
+    //         }
+    //         catch (ValidationException $e) {
+    //             $errors      = $e->validator->errors();
+    //             $allMessages = $errors->all();
+    //             return response()->json([
+    //                 'status' => '0',
+    //                 'message' => $allMessages[0],
+    //                 'data' => [],
+    //             ]);
+    //         }
+
+    //     }
+
+    // }
+
     public function update(Request $request)
     {
         try {
             $request->validate([
-                'editName' => ['required', 'string', 'max:255'],
-                'email' => Rule::unique('clients', 'email')->ignore($request->input('id')),
+                'editName' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('clients', 'company_name')->ignore($request->input('id'))
+                ],
+                'editEmail' => [
+                    'required',
+                    'email',
+                    Rule::unique('clients', 'email')->ignore($request->input('id')),
+                ],
                 'editMobile' => 'required',
                 'editAddress' => 'required',
             ]);
@@ -187,9 +275,11 @@ class ClientController extends Controller
                 'data' => [],
             ]);
         } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
                 'status' => '0',
-                'message' => 'Data Updated Failed...',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
         }

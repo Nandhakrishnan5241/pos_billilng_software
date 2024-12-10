@@ -8,6 +8,7 @@ use App\Modules\Clients\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
@@ -24,12 +25,26 @@ class UserController extends Controller
     public function save(Request $request)
     {
         try {
-            $user = Auth::user();
-            $clientID = $user->client_id;
+            $user      = Auth::user();
+            $clientID  = $user->client_id;
             $request->validate([
-                'name' => ['required', 'string', 'max:255'],
+                // 'name' => ['required', 'string', 'max:255', 'unique:' . User::class . ',name'],
+                'name' => [
+                    'required',
+                    'string',
+                    Rule::unique('users', 'name')
+                        ->where('client_id', $clientID)
+                        ->ignore($clientID),
+                ],
                 'role' => 'required',
-                'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+                // 'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+                'email' => [
+                    'required',
+                    'email',
+                    Rule::unique('users', 'email')
+                        ->where('client_id', $clientID)
+                        ->ignore($clientID),
+                ],
                 'userpassword' => ['required', Rules\Password::defaults()],
             ]);
 
@@ -51,9 +66,11 @@ class UserController extends Controller
                 'data' => [],
             ]);
         } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
                 'status' => '0',
-                'message' => 'Data Saved Failed...',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
         }
@@ -103,8 +120,8 @@ class UserController extends Controller
         try {
             $user = Auth::user();
             $request->validate([
-                'editName' => ['required', 'string', 'max:255'],
-                'editEmail' => ['required', 'lowercase', 'email', 'max:255'],
+                'editName' => ['required', 'string', 'max:255', Rule::unique('users', 'name')->ignore($request->input('id'))],
+                'editEmail' => ['required', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($request->input('id'))],
             ]);
 
             $id                    = $request->input('id');
@@ -142,9 +159,11 @@ class UserController extends Controller
                 'data' => [],
             ]);
         } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
                 'status' => '0',
-                'message' => 'Data Updated Failed...',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
         }
