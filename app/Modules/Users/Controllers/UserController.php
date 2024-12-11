@@ -3,6 +3,7 @@
 namespace App\Modules\Users\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendClientDetails;
 use App\Models\User;
 use App\Modules\Clients\Models\Client;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -45,20 +47,24 @@ class UserController extends Controller
                         ->where('client_id', $clientID)
                         ->ignore($clientID),
                 ],
-                'userpassword' => ['required', Rules\Password::defaults()],
+                // 'userpassword' => ['required', Rules\Password::defaults()],
             ]);
 
-            $role = $request->role;
+            $role         = $request->role;
+            $password     = Str::random(8) . '@' . rand(100, 999);
 
-            $user                   = User::create([
+            $user                   =  User::create([
                 'name'              => $request->name,
                 'client_id'         => $clientID,
                 'email'             => $request->email,
                 'display_name'      => $request->displayName,
                 'phone'             => $request->phone,
-                'password'          => Hash::make($request->userpassword),
+                'password'          => $password,
+                // 'password'          => Hash::make($request->userpassword),
             ]);
             $user->assignRole([$role]);
+
+            SendClientDetails::dispatch($user, $password);
 
             return response()->json([
                 'status' => '1',

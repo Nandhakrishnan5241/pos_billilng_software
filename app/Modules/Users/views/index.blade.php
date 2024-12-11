@@ -82,14 +82,14 @@
                     <input class="form-control" name="phone" type="number" placeholder="Enter the mobile"
                         id="phone" />
                 </div>
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label for="userpassword">Password</label>
                     <input class="form-control" name="userpassword" type="text" placeholder="Enter the userpassword" id="userpassword" />
                 </div>
                 <div class="mb-3">
                     <label for="userconfirmpassword">Confirm Password</label>
                     <input class="form-control" name="userconfirmpassword" type="text" placeholder="Enter the userconfirmpassword" id="userconfirmpassword" />
-                </div>
+                </div> --}}
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Save</button>                 
                 </div>        
