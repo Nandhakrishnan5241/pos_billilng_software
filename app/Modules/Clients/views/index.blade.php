@@ -79,16 +79,49 @@
                         <input class="form-control" name="email" type="email" placeholder="Enter the email"
                             id="email" />
                     </div>
+                    <div class="col-12 mb-3">
+                        <label for="address">Address</label>
+                        <input class="form-control" name="address" type="text" placeholder="Enter the street address"
+                            id="address" />
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="city">City</label>
+                        <input class="form-control" name="city" type="text" placeholder="Enter the city"
+                            id="city" />
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="pincode">Pincode</label>
+                        <input class="form-control" name="pincode" type="text" placeholder="Enter the pincode"
+                            id="pincode" />
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="state">State</label>
+                        <select class="form-select" name="state" id="state">
+                            <option value="" disabled selected>Select a state</option>
+                            <option value="Tamilnadu">Tamilnadu</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Delhi">Delhi</option>
+                            {{-- @foreach ($roles as $key => $value)
+                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
+                            @endforeach --}}
+                        </select>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="country">country</label>
+                        <select class="form-select" name="country" id="country">
+                            <option value="" disabled selected>Select a country</option>
+                            <option value="India">India</option>
+                            {{-- @foreach ($roles as $key => $value)
+                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
+                            @endforeach --}}
+                        </select>
+                    </div>
                     <div class="col-6 mb-3">
                         <label for="mobile">Company Mobile</label>
                         <input class="form-control" name="mobile" type="number" placeholder="Enter the mobile"
                             id="mobile" />
                     </div>
-                    <div class="col-6 mb-3">
-                        <label for="address">Company Address</label>
-                        <input class="form-control" name="address" type="text" placeholder="Enter the address"
-                            id="address" />
-                    </div>
+
                     <div class="col-6 mb-3">
                         <label for="logo">Company Logo</label>
                         <input class="form-control" name="logo" type="file" id="logo" />
@@ -129,7 +162,8 @@
                 <div class="row">
                     <div class="col-6 mb-3">
                         <input type="hidden" id="id" name="id">
-                        <input class="form-control" name="currentImage" id="currentImage" type="hidden" placeholder="" />
+                        <input class="form-control" name="currentImage" id="currentImage" type="hidden"
+                            placeholder="" />
                         <label for="editName">Company Name</label>
                         <input class="form-control" name="editName" type="text"
                             placeholder="Enter the company name"id="editName" />
@@ -139,16 +173,55 @@
                         <input class="form-control" name="editEmail" type="email" placeholder="Enter the email"
                             id="editEmail" />
                     </div>
+                    
+                    <div class="col-12 mb-3">
+                        <label for="editAddress">Company Address</label>
+                        <input class="form-control" name="editAddress" type="text" placeholder="Enter the address"
+                            id="editAddress" />
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label for="editCity">City</label>
+                        <input class="form-control" name="editCity" type="text" placeholder="Enter the city"
+                            id="editCity" />
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label for="editPincode">Pincode</label>
+                        <input class="form-control" name="editPincode" type="text" placeholder="Enter the pincode"
+                            id="editPincode" />
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label for="editState">State</label>
+                        <select class="form-select" name="editState" id="editState">
+                            <option value="" disabled selected>Select a state</option>
+                            <option value="Tamilnadu">Tamilnadu</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Delhi">Delhi</option>
+                            {{-- @foreach ($roles as $key => $value)
+                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
+                            @endforeach --}}
+                        </select>
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label for="editCountry">country</label>
+                        <select class="form-select" name="editCountry" id="editCountry">
+                            <option value="" disabled selected>Select a country</option>
+                            <option value="India">India</option>
+                            {{-- @foreach ($roles as $key => $value)
+                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
+                            @endforeach --}}
+                        </select>
+                    </div>
+
                     <div class="col-6 mb-3">
                         <label for="editMobile">Company Mobile</label>
                         <input class="form-control" name="editMobile" type="number" placeholder="Enter the mobile"
                             id="editMobile" />
                     </div>
-                    <div class="col-6 mb-3">
-                        <label for="editAddress">Company Address</label>
-                        <input class="form-control" name="editAddress" type="text" placeholder="Enter the address"
-                            id="editAddress" />
-                    </div>
+
                     <div class="col-6 mb-3">
                         <label for="editLogo">Company Logo</label>
                         <input class="form-control" name="editLogo" type="file" id="editLogo" />

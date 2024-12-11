@@ -21,50 +21,53 @@
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4" style="max-width: 400px; width: 100%;">
-        <h3 class="text-center mb-4">Login</h3>
+        {{-- <h3 class="text-center mb-4">Login</h3> --}}
+        <img src="{{ asset('../../images/default/login_logo.png') }}" alt="" class=" mx-4 "
+            style="width: 80%; object-fit: cover;">
         {{-- <form method="POST" action="{{ route('login') }}" id="loginForm"> --}}
         <form method="POST" action="{{ route('bsadmin.login') }}" id="loginForm">
             @csrf
-
-            <!-- Email Address -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}"
                     autofocus autocomplete="username">
-                @error('email')
-                    {{-- <div class="text-danger mt-1">{{ $message }}</div> --}}
-                    <div class="alert alert-danger">
-                        {{ $message }}
-                    </div>
+
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control"
+                    autocomplete="current-password">
+                @error('password')
+                    <div class="text-danger mt-1">{{ $message }}</div>
                 @enderror
+            </div>
 
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control"
-                        autocomplete="current-password">
-                    @error('password')
-                        <div class="text-danger mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
 
-                <!-- Remember Me -->
-                {{-- <div class="form-check mb-3">
+            <!-- Remember Me -->
+            {{-- <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="remember_me" name="remember">
                 <label class="form-check-label" for="remember_me">
                     Remember me
                 </label>
             </div> --}}
 
-                <!-- Forgot Password and Submit Button -->
-                <div class="d-flex justify-content-between align-items-center">
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="text-decoration-none small">
-                            Forgot your password?
-                        </a>
-                    @endif
-                    <button type="submit" class="btn btn-dark">Log In</button>
-                </div>
+            <!-- Forgot Password and Submit Button -->
+            <div class="d-flex justify-content-between align-items-center">
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="text-decoration-none small">
+                        Forgot your password?
+                    </a>
+                @endif
+                <button type="submit" class="btn btn-dark">Log In</button>
+            </div>
+            <div class="mt-2">
+                @error('email')
+                    {{-- <div class="text-danger mt-1">{{ $message }}</div> --}}
+                    <div class="alert alert-danger">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
         </form>
     </div>
 </div>

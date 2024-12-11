@@ -19,7 +19,11 @@ return new class extends Migration
             $table->string('mobile', 15)->nullable(); 
             $table->boolean('is_superadmin')->default(false); 
             $table->boolean('is_subscribed')->default(false); 
-            $table->text('primary_address'); 
+            $table->text('address'); 
+            $table->text('city'); 
+            $table->text('pincode'); 
+            $table->text('state'); 
+            $table->text('country'); 
             $table->unsignedBigInteger('timezone_id')->nullable(); 
             $table->timestamps(); 
             $table->softDeletes(); 

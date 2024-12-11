@@ -315,7 +315,11 @@ window.editData = function (id) {
         $("#editName").val(data.company_name);
         $("#editEmail").val(data.email);
         $("#editMobile").val(data.mobile);
-        $("#editAddress").val(data.primary_address);
+        $("#editAddress").val(data.address);
+        $("#editCity").val(data.city);
+        $("#editPincode").val(data.pincode);
+        $("#editState").val(data.state);
+        $("#editCountry").val(data.country);
         $("#currentImage").val(data.company_logo);
         if (data.is_subscribed === 1) {
             $("#editSubscribe").prop("checked", true); 

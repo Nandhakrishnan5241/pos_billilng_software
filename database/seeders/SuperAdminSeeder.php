@@ -21,12 +21,16 @@ class SuperAdminSeeder extends Seeder
         if(empty($client)){
             $client = Client::create([
                 'company_name' => 'Super Admin',
-                'company_logo' => 'company_logo',
+                'company_logo' => '../../images/clients/1733835693.png',
                 'email'        => 'superadmin@gmail.com',
                 'mobile'       => '9988774455',
                 'is_superadmin'=> 1,
                 'is_subscribed'=> 1,
-                'primary_address'=> 'chennai',
+                'address'=> 'omr main road',
+                'city'=> 'chennai',
+                'pincode'=> '665544',
+                'state'=> 'Tamilnadu',
+                'country'=> 'India',
                 'timezone_id' => time()
             ]);
             $this->command->info('Superadmin client created successfully.');

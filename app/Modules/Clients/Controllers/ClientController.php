@@ -76,6 +76,10 @@ class ClientController extends Controller
             $email       = $request->input('email');
             $mobile      = $request->input('mobile');
             $address     = $request->input('address');
+            $city        = $request->input('city');
+            $pincode     = $request->input('pincode');
+            $state       = $request->input('state');
+            $country     = $request->input('country');
             $subscribe   = $request->input('subscribe');
             $fullPath    = '../../' . $fullPath;
 
@@ -86,7 +90,11 @@ class ClientController extends Controller
             $client->email             = $email;
             $client->mobile            = $mobile;
             $client->is_subscribed     = $subscribe;
-            $client->primary_address   = $address;
+            $client->address           = $address;
+            $client->city              = $city;
+            $client->pincode           = $pincode;
+            $client->state             = $state;
+            $client->country           = $country;
             $client->timezone_id       = time();
 
 
@@ -98,8 +106,6 @@ class ClientController extends Controller
 
             $clientID      = $client->id;
             $role          = 'admin';
-
-            // ClientController::createUserForClient($clientID);
 
             if ($clientID) {
                 try {
@@ -158,54 +164,6 @@ class ClientController extends Controller
         }
     }
 
-    // public static function createUserForClient(Request $request, $clientID){
-    //     $role = 'admin';
-    //     if($clientID){
-    //         try{
-    //             $request->validate([
-    //                 'name' => [
-    //                     'required',
-    //                     'string',
-    //                     Rule::unique('users', 'name')
-    //                         ->where('client_id', $clientID)
-    //                         ->ignore($clientID),
-    //                 ],
-    //                 'email' => [
-    //                     'required',
-    //                     'email',
-    //                     Rule::unique('users', 'email')
-    //                         ->where('client_id', $clientID)
-    //                         ->ignore($clientID),
-    //                 ],
-    //             ]);
-    //             $user = new User();
-    //             $user->client_id       = $clientID;
-    //             $user->name            = $name;
-    //             $user->email           = $email;
-    //             $user->display_name    = $name;
-    //             $user->password        = $hashPassword;
-    //             $user->phone           = $mobile;
-    //             $user->primary_admin   = 1;
-    //             $user->save();
-
-    //             $user->assignRole([$role]);
-
-    //             SendClientDetails::dispatch($user, $password);
-    //         }
-    //         catch (ValidationException $e) {
-    //             $errors      = $e->validator->errors();
-    //             $allMessages = $errors->all();
-    //             return response()->json([
-    //                 'status' => '0',
-    //                 'message' => $allMessages[0],
-    //                 'data' => [],
-    //             ]);
-    //         }
-
-    //     }
-
-    // }
-
     public function update(Request $request)
     {
         try {
@@ -231,6 +189,10 @@ class ClientController extends Controller
             $email       = $request->input('editEmail');
             $mobile      = $request->input('editMobile');
             $address     = $request->input('editAddress');
+            $city        = $request->input('editCity');
+            $pincode     = $request->input('editPincode');
+            $state       = $request->input('editState');
+            $country     = $request->input('editCountry');
             $superadmin  = $request->input('superadmin');
             $subscribe    = $request->input('subscribe');
             $currentImage = $request->input('currentImage');
@@ -264,7 +226,11 @@ class ClientController extends Controller
             $client->mobile            = $mobile;
             $client->is_superadmin     = $superadmin;
             $client->is_subscribed     = $subscribe;
-            $client->primary_address   = $address;
+            $client->address           = $address;
+            $client->city              = $city;
+            $client->pincode           = $pincode;
+            $client->state             = $state;
+            $client->country           = $country;
             $client->timezone_id       = time();
 
             $client->save();
