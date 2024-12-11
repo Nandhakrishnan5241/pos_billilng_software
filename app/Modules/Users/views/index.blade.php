@@ -144,4 +144,32 @@
         </div>
     </div>
 
+    {{-- CHANGE PASSWORD OFFCANVAS --}}
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="changePasswordCanvas" aria-labelledby="changePasswordCanvasLabel"
+        style="width: 50%">
+        <div class="offcanvas-header">
+            <h5 id="changePasswordCanvasLabel">Update User</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form id="userChangePasswordForm" action="{{ route('users.changepassword') }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                     <label for="userpassword">New Password</label>
+                    <input class="form-control" name="userpassword" type="password" id="userpassword" placeholder="enter the new password" />
+                   
+                </div>
+                <div class="mb-3">
+                    <label for="userconfirmpassword">Confirm Password</label>
+                    <input class="form-control" name="userconfirmpassword" type="password" id="userconfirmpassword" placeholder="enter the confirm password"/>
+                    
+                </div>     
+                <div class="mt-4">
+                    <button class="btn btn-primary float-end" type="submit">Save</button>                 
+                </div>   
+            </form>
+
+        </div>
+    </div>
+
 @endsection

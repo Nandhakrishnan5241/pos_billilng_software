@@ -1,6 +1,6 @@
+var changePasswordID = '';
 $(document).ready(function(){
     getTableData('initial');
-
     var formValidator = {
         rules: {
             name: {
@@ -145,7 +145,6 @@ $("#editUserForm").on("submit", function (e) {
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response);
                 if (response.status == 1) {
                     console.log(response)
                     Swal.fire({
@@ -230,6 +229,125 @@ window.editData = function (id) {
         $('#editRole').val(data.role);
     });
 };
+
+// CHANGE PASSWORD
+window.changePassword = function (id) {
+    document.getElementById('userChangePasswordForm').reset();
+    $.get("users/" + id + "/edit", function (data) {
+        changePasswordID = data.id;
+
+        var offcanvas    = new bootstrap.Offcanvas(
+            document.getElementById("changePasswordCanvas")
+        );
+        offcanvas.show();
+    });
+};
+
+var changePasswordFrom = {
+    rules: {
+       
+        userpassword: {
+            required: true,
+            minlength: 8,
+        },
+        userconfirmpassword: {
+            required: true,
+            equalTo: "#userpassword",
+        },
+    },
+    messages: {
+      
+        userpassword: {
+            required: "Password field is required",
+            minlength: "Password field must be at least 8 characters",
+        },
+        userconfirmpassword: {
+            required: "Confirm field password is required",
+            equalTo:
+                "New Password field and confirm password field should same",
+        },
+    },
+    highlight: function (element) {
+        $(element).addClass("validation");
+        $(element).next("span").addClass("validation");
+    },
+    unhighlight: function (element) {
+        $(element).removeClass("validation");
+        $(element).next("span").removeClass("validation");
+    },
+    errorPlacement: function (error, element) {
+        element.attr("placeholder", error.text()).addClass("validation");
+        element.next("span").addClass("validation");
+    },
+    debug: false,
+    submitHandler: function (form) {
+        // form.submit();
+    },
+};
+
+$("#userChangePasswordForm").validate(changePasswordFrom);
+
+$("#userChangePasswordForm").on("submit", function (e) {    
+    if ($("#userChangePasswordForm").valid()) {
+        e.preventDefault();
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                    "content"
+                ),
+            },
+        });
+
+        let password        = $("#userpassword").val();
+        let confirmpassword = $("#userconfirmpassword");
+        changePasswordID    = changePasswordID;
+
+        let formData = new FormData();
+
+        formData.append("changePasswordID", changePasswordID);
+        formData.append("password", password);
+        formData.append("confirmpassword", confirmpassword);
+
+        $.ajax({
+            url: $(this).attr("action"),
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.status) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: response.msg,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    $("#changePasswordCanvas").offcanvas('hide');
+                    const table = $("#usersTable").DataTable();
+                    table.clear().draw();
+                    table.destroy();
+                    getTableData("initial");
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: response.msg,
+                        // footer: '<a href="#">Why do I have this issue?</a>'
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: response.msg,
+                    footer: '<a href="#">Why do I have this issue?</a>',
+                });
+            },
+        });
+    }
+});
 
 // DELETE
 window.deleteData = function (id) {

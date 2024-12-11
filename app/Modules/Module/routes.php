@@ -49,6 +49,7 @@ Route::prefix('bsadmin/users')->middleware('auth')->group(function(){
     Route::post('/update', [UserController::class, 'update'])->name('users.update');
     Route::get('{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::get('/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
+    Route::post('/changepassword', [UserController::class, 'changePassword'])->name('users.changepassword');
    
 });
 

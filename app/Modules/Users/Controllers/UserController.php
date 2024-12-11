@@ -216,17 +216,21 @@ class UserController extends Controller
         $data = $datas->map(function ($data) {
             $editAction    = '';
             $deleteAction  = '';
+            $changePassword  = '';
             if (Auth::user()->can('users.edit') || Auth::user()->hasRole('superadmin')) {
                 $editAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="editData(' . $data->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
             }
             if (Auth::user()->can('users.delete') || Auth::user()->hasRole('superadmin')) {
                 $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="deleteData(' . $data->id . ')"><i class="fa-solid fa-trash"></i></a>';
             }
+            if (Auth::user()->hasRole('superadmin')) {
+                $changePassword = '<a href="#" class="btn text-dark" data-id="' . $data->id . '" onclick="changePassword(' . $data->id . ')"><i class="fa-solid fa-lock"></i></a>';
+            }
             return [
                 'id' => $data->id,
                 'name' => $data->name,
                 'email' => $data->email,
-                'action' => $editAction . $deleteAction,
+                'action' => $editAction . $deleteAction . $changePassword,
             ];
         });
 
@@ -239,5 +243,34 @@ class UserController extends Controller
             'recordsFiltered' => $filteredRecords,
             'data' => $data,
         ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        try {
+            $request->validate([
+                'password' => 'required',
+            ]);
+            $id = $request->changePasswordID;
+            
+            $password    = $request->password;
+            $user        = User::find($id);
+            $user->password = $password;
+            $user->save();
+
+            return response()->json([
+                'status' => 1,
+                'msg' => 'Password Updated Successfully...',
+                'data' => []
+            ]);
+        } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
+            return response()->json([
+                'status' => '0',
+                'message' => $allMessages[0],
+                'data' => [],
+            ]);
+        }
     }
 }
