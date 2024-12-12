@@ -97,7 +97,7 @@ window.getSelectedValues = function () {
 function addPrivilegesToTable(selectedRole, groupedArray) {
     let data = JSON.stringify(groupedArray);
     $.get(
-        "previleges/addpermission/" + selectedRole + "/" + data,
+        "privileges/addpermission/" + selectedRole + "/" + data,
         function (response) {
             if (response.status == 1) {
                 Swal.fire({

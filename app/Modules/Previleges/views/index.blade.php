@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Previleges')
+@section('title', 'Manage Privileges')
 <style>
     .validation,
     .validation:focus {
@@ -18,15 +18,15 @@
 <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
 <script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
 
-@vite(['resources/js/previleges.js'])
+@vite(['resources/js/privileges.js'])
 
 @section('content')
 
-    <div class="mt-4 h4">Manage Previleges</div>
+    <div class="mt-4 h4">Manage Privileges</div>
     <hr>
     <div class="row mt-3">
         <div class="col-4">
-            @if (auth()->user()->can('previleges.create') || (auth()->user()->hasRole('superadmin')))
+            @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin')))
                 <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)">
                     <option value="" disabled selected>Select a role</option>
                     @foreach ($roles as $key => $value)
@@ -37,7 +37,7 @@
             @endif
         </div>
         <div class="mt-3">
-            <table id="previlegesTable" class="table table-bordered table-striped">
+            <table id="privilegesTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>S.No</th>
@@ -70,7 +70,7 @@
 
                 </tbody>
             </table>
-            @if (auth()->user()->can('previleges.create') || (auth()->user()->hasRole('superadmin')))
+            @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin')))
                 <button class="btn btn-primary mt-3 float-end" onclick="getSelectedValues()">Submit</button>
             @endif
         </div>

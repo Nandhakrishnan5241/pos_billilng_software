@@ -57,11 +57,11 @@
                         </nav>
                     @endif
 
-                    @if (auth()->user()->can('previleges.view'))
+                    @if (auth()->user()->can('privileges.view'))
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ url('bsadmin/previleges') }}">
+                            <a class="nav-link" href="{{ url('bsadmin/privileges') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-regular fa-circle-user"></i></div>
-                                Previleges
+                                Privileges
                             </a>
                         </nav>
                     @endif
