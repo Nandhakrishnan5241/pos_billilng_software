@@ -48,7 +48,8 @@
                         </nav>
                     @endif
 
-                    @if (auth()->user()->can('permissions.view'))
+                    {{-- @if (auth()->user()->can('permissions.view')) --}}
+                    @if (auth()->user()->hasRole('superadmin'))
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ url('bsadmin/permissions') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-gear"></i></div>
@@ -57,7 +58,7 @@
                         </nav>
                     @endif
 
-                    @if (auth()->user()->can('privileges.view'))
+                    @if (auth()->user()->can('privileges.view'))                   
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ url('bsadmin/privileges') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-regular fa-circle-user"></i></div>
