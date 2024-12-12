@@ -54,9 +54,6 @@ class ModuleController extends Controller
             $name    = $request->input('name');
             $slug    = strtolower(str_replace(' ', '', $name));
 
-            // $columns = Schema::getColumnListing(ModuleController::$tableName);
-            //  $columnCount = count($columns);
-
             $lastRecord             = Module::latest('id')->first();
             if(!empty($lastRecord)){
                 $lastRecordOrderCount   = $lastRecord->order;

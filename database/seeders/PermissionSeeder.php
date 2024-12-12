@@ -19,6 +19,10 @@ class PermissionSeeder extends Seeder
             $superAdminID = 1;
             
             $permissions = [
+                "admin.create",
+                "admin.view",
+                "admin.edit",
+                "admin.delete",
                 "modules.create",
                 "modules.view",
                 "modules.edit",
