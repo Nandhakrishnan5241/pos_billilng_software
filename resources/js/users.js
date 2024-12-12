@@ -195,7 +195,12 @@ function getTableData(type) {
         processing: true,
         serverSide: true,
         stateSave: type === 'initial' ? false : true,
-        ajax: "users/getdetails", 
+        ajax: {
+            url: "users/getdetails",
+            data: function(d) {
+                d.client_id = $('#client').val(); // Pass the selected client ID
+            }
+        },
         columns: [
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
@@ -211,6 +216,17 @@ function getTableData(type) {
         }
     });
 }
+
+
+window.getSelectedClient = function (selectElement) {
+    var selectedClientId = selectElement.value;
+    console.log(selectedClientId)
+
+    // Refresh the DataTable with the selected client ID
+    $('#usersTable').DataTable().ajax.reload();
+
+};
+
 
 // EDIT
 window.editData = function (id) {

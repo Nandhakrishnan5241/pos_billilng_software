@@ -21,7 +21,8 @@ class UserController extends Controller
     {
         $roles = Role::get();
         $roles = $roles->slice(1);
-        return view('users::index', compact('roles'));
+        $clients = Client::get();
+        return view('users::index', compact('roles','clients'));
     }
 
     public function save(Request $request)
@@ -190,10 +191,12 @@ class UserController extends Controller
 
     public function getDetails(Request $request)
     {
-        $columns = ['id', 'name'];
-        $limit   = $request->input('length', 10);
-        $start   = $request->input('start', 0);
-        $search  = $request->input('search')['value'];
+        $user      =  Auth::user();
+        $client_id = $user->client_id;
+        $columns   = ['id', 'name'];
+        $limit     = $request->input('length', 10);
+        $start     = $request->input('start', 0);
+        $search    = $request->input('search')['value'];
 
         $query = User::query();
 
@@ -201,6 +204,15 @@ class UserController extends Controller
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
             });
+        }
+
+        if ($request->has('client_id') && $request->client_id) {
+            $query->where('client_id', $request->client_id);
+        }
+        else{
+            if($client_id != 1){
+                $query->where('client_id', $client_id);
+            }
         }
 
         $orderColumnIndex = $request->input('order.0.column');

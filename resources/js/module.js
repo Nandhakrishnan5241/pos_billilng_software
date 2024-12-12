@@ -181,7 +181,7 @@ function getTableData(type) {
             { data: "name", name: "name" },
             { data: "slug", name: "slug" },
             { data: "order", name: "order" },
-            { data: "status", name: "status" },
+            // { data: "status", name: "status" },
             {
                 data: "action",
                 name: "action",

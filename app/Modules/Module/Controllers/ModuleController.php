@@ -68,7 +68,7 @@ class ModuleController extends Controller
             $module->name    = $name;
             $module->slug    = $slug;
             $module->order   = $order;
-            $module->status  = $status;
+            // $module->status  = $status;
             $module->save();
 
             return response()->json([

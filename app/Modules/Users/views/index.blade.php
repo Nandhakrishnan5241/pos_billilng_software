@@ -15,22 +15,37 @@
 </style>
 
 {{-- SWEET ALERT --}}
-<link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
-<script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
+{{-- <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
+<script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script> --}}
 
 @vite(['resources/js/users.js'])
 
 @section('content')
 
     <div class="mt-4 h4">Manage Users
-        @if (auth()->user()->can('users.create') || (auth()->user()->hasRole('superadmin')))
+        @if (auth()->user()->can('users.create') || auth()->user()->hasRole('superadmin'))
             <button class="btn btn-primary float-end me-2" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Add User</button>
         @endif
     </div>
     <hr>
+    <div class="row mt-3">
+        <div class="col-4">
+            @if (auth()->user()->hasRole('superadmin'))
+            <label for="client">Client</label>
+                <select class="form-select" name="client" id="client" onchange="getSelectedClient(this)">
+                    <option value="" disabled selected>Select a client</option>
+                    @foreach ($clients as $key => $value)
+                        <option value="{{ $value['id'] }}">{{ $value['company_name'] }}</option>
+                    @endforeach
+                </select>
+                <div id="client-error" class="mx-2" style="color: red; display: none;">Please select a client</div>
+            @endif
+        </div>
 
-    {{-- <div class="table-responsive"> --}}
+
+        {{-- <div class="table-responsive"> --}}
+        <div class="row mt-4">
         <table id="usersTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -43,6 +58,8 @@
                 <!-- Data will be populated by DataTables -->
             </tbody>
         </table>
+    </div>
+    </div>
     {{-- </div> --}}
 
     {{-- ADD --}}
@@ -62,7 +79,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="displayName">Display Name</label>
-                    <input class="form-control" name="displayName" type="text" placeholder="Enter the displayName" id="displayName" />
+                    <input class="form-control" name="displayName" type="text" placeholder="Enter the displayName"
+                        id="displayName" />
                 </div>
                 <div class="mb-3">
                     <label for="email">Email</label>
@@ -91,8 +109,8 @@
                     <input class="form-control" name="userconfirmpassword" type="text" placeholder="Enter the userconfirmpassword" id="userconfirmpassword" />
                 </div> --}}
                 <div class="mt-4 mb-0">
-                    <button class="btn btn-primary float-end" type="submit">Save</button>                 
-                </div>        
+                    <button class="btn btn-primary float-end" type="submit">Save</button>
+                </div>
             </form>
 
         </div>
@@ -112,15 +130,18 @@
                     <input name="id" type="hidden" placeholder="" id="id" />
 
                     <label for="name">Name</label>
-                    <input class="form-control" name="editName" type="text" placeholder="Enter the name" id="editName" />
+                    <input class="form-control" name="editName" type="text" placeholder="Enter the name"
+                        id="editName" />
                 </div>
                 <div class="mb-3">
                     <label for="editDisplayName">Display Name</label>
-                    <input class="form-control" name="editDisplayName" type="text" placeholder="Enter the editDisplayName" id="editDisplayName" />
+                    <input class="form-control" name="editDisplayName" type="text"
+                        placeholder="Enter the editDisplayName" id="editDisplayName" />
                 </div>
                 <div class="mb-3">
                     <label for="email">Email</label>
-                    <input class="form-control" name="editEmail" type="email" placeholder="Enter the name" id="editEmail" />
+                    <input class="form-control" name="editEmail" type="email" placeholder="Enter the name"
+                        id="editEmail" />
                 </div>
                 <div class="mb-3">
                     <label for="editRole">Role</label>
@@ -137,16 +158,16 @@
                         id="editPhone" />
                 </div>
                 <div class="mt-4 mb-0">
-                    <button class="btn btn-primary float-end" type="submit">Save</button>                 
-                </div>        
+                    <button class="btn btn-primary float-end" type="submit">Save</button>
+                </div>
             </form>
 
         </div>
     </div>
 
     {{-- CHANGE PASSWORD OFFCANVAS --}}
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="changePasswordCanvas" aria-labelledby="changePasswordCanvasLabel"
-        style="width: 50%">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="changePasswordCanvas"
+        aria-labelledby="changePasswordCanvasLabel" style="width: 50%">
         <div class="offcanvas-header">
             <h5 id="changePasswordCanvasLabel">Update User</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -155,18 +176,20 @@
             <form id="userChangePasswordForm" action="{{ route('users.changepassword') }}" method="POST">
                 @csrf
                 <div class="mb-3">
-                     <label for="userpassword">New Password</label>
-                    <input class="form-control" name="userpassword" type="password" id="userpassword" placeholder="enter the new password" />
-                   
+                    <label for="userpassword">New Password</label>
+                    <input class="form-control" name="userpassword" type="password" id="userpassword"
+                        placeholder="enter the new password" />
+
                 </div>
                 <div class="mb-3">
                     <label for="userconfirmpassword">Confirm Password</label>
-                    <input class="form-control" name="userconfirmpassword" type="password" id="userconfirmpassword" placeholder="enter the confirm password"/>
-                    
-                </div>     
+                    <input class="form-control" name="userconfirmpassword" type="password" id="userconfirmpassword"
+                        placeholder="enter the confirm password" />
+
+                </div>
                 <div class="mt-4">
-                    <button class="btn btn-primary float-end" type="submit">Save</button>                 
-                </div>   
+                    <button class="btn btn-primary float-end" type="submit">Save</button>
+                </div>
             </form>
 
         </div>
