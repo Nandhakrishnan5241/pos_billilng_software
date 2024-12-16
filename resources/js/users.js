@@ -13,14 +13,7 @@ $(document).ready(function(){
             role: { 
                 required: true, 
             },
-            // userpassword: {
-            //     required: true,
-            //     minlength: 8,
-            // },
-            // userconfirmpassword: {
-            //     required: true,
-            //     equalTo: "#userpassword",
-            // },
+          
         },
         messages: {
             name: {
@@ -32,15 +25,7 @@ $(document).ready(function(){
             role: {
                 required: "Select a role",
             },
-            // userpassword: {
-            //     required: "Password field is required",
-            //     minlength: "Password field must be at least 8 characters",
-            // },
-            // userconfirmpassword: {
-            //     required: "Confirm field password is required",
-            //     equalTo:
-            //         "New Password field and confirm password field should same",
-            // },
+           
         },
         highlight: function (element) {
             $(element).addClass("validation");
