@@ -27,13 +27,28 @@
     <div class="row mt-3">
         <div class="col-4">
             @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin')))
-                <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)">
+                {{-- <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)"> --}}
+                <select class="form-select" name="role" id="role" >
                     <option value="" disabled selected>Select a role</option>
                     @foreach ($roles as $key => $value)
                         <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
                     @endforeach
                 </select>
                 <div id="role-error" class="mx-2" style="color: red; display: none;">Please select a role</div>
+            @endif
+        </div>
+        <div class="col-4">
+            {{-- @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin'))) --}}
+            @if ((auth()->user()->hasRole('superadmin')))
+                <select class="form-select" name="client" id="client" >
+                    <option value="" disabled selected>Select a client</option>
+                    @foreach ($clients as $key => $value)
+                        <option value="{{ $value['id'] }}">{{ $value['company_name'] }}</option>
+                    @endforeach
+                </select>
+                <div id="client-error" class="mx-2" style="color: red; display: none;">Please select a client</div>
+            @else
+            <input type="hidden" name="client" id="client" value="0">
             @endif
         </div>
         <div class="mt-3">

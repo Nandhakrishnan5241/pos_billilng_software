@@ -33,20 +33,32 @@ document.querySelectorAll(".disable-checkbox").forEach((disableCheckbox) => {
         }
     });
 });
-var roleID;
-window.getSelectedRole = function (selectedRole) {
-    roleID = selectedRole.value;
-};
+// var roleID;
+// window.getSelectedRole = function (selectedRole) {
+//     roleID = selectedRole.value;
+// };
+// var clientID;
+// window.getSelectedClient = function (selectedClient) {
+//     clientID = selectedClient.value;
+// };
 
 window.getSelectedValues = function () {
-    const selectedRole = document.getElementById("role").value;
-    const checkboxes = document.querySelectorAll(".permission-checkbox");
+    const selectedRole   = document.getElementById("role").value;
+    const selectedClient = document.getElementById("client").value;
+    const checkboxes     = document.querySelectorAll(".permission-checkbox");
    
     if (selectedRole === "") {
         $('#role-error').show(); 
         return false;
     } else {
         $('#role-error').hide(); 
+    }
+
+    if (selectedClient === "") {
+        $('#client-error').show(); 
+        return false;
+    } else {
+        $('#client-error').hide(); 
     }
 
     const selectedData = [];
@@ -91,13 +103,13 @@ window.getSelectedValues = function () {
 
     // console.log(groupedArray);
 
-    addPrivilegesToTable(selectedRole, groupedArray);
+    addPrivilegesToTable(selectedRole, selectedClient, groupedArray);
 };
 
-function addPrivilegesToTable(selectedRole, groupedArray) {
+function addPrivilegesToTable(selectedRole, selectedClient, groupedArray) {
     let data = JSON.stringify(groupedArray);
     $.get(
-        "privileges/addpermission/" + selectedRole + "/" + data,
+        "privileges/addpermission/" + selectedRole + "/" + selectedClient + "/" +data ,
         function (response) {
             if (response.status == 1) {
                 Swal.fire({

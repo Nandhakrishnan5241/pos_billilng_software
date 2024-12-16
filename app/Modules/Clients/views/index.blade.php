@@ -22,6 +22,21 @@
     .image-container {
         display: none;
     }
+
+    .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        /* Allows items to wrap to the next line if needed */
+        gap: 10px;
+        /* Adds space between checkboxes */
+        justify-content: space-evenly;
+        /* Distributes checkboxes evenly */
+    }
+
+    .checkbox-container label {
+        display: flex;
+        align-items: center;
+    }
 </style>
 
 {{-- SWEET ALERT --}}
@@ -39,6 +54,14 @@
         @endif
     </div>
     <hr>
+    
+    {{-- @php
+        $user = Auth::user();
+        $client = \App\Modules\Clients\Models\Client::with('modules')->find($user->client_id);
+        $modules = $client ? $client->modules : collect();
+        dd($modules);
+        
+    @endphp --}}
 
     {{-- <div class="table-responsive"> --}}
     <table id="clientsTable" class="table table-bordered table-striped">
@@ -74,26 +97,31 @@
                         <input class="form-control" name="name" type="text"
                             placeholder="Enter the company name"id="name" />
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="email">Company Email</label>
                         <input class="form-control" name="email" type="email" placeholder="Enter the email"
                             id="email" />
                     </div>
+
                     <div class="col-12 mb-3">
                         <label for="address">Address</label>
                         <input class="form-control" name="address" type="text" placeholder="Enter the street address"
                             id="address" />
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="city">City</label>
                         <input class="form-control" name="city" type="text" placeholder="Enter the city"
                             id="city" />
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="pincode">Pincode</label>
                         <input class="form-control" name="pincode" type="text" placeholder="Enter the pincode"
                             id="pincode" />
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="state">State</label>
                         <select class="form-select" name="state" id="state">
@@ -101,21 +129,17 @@
                             <option value="Tamilnadu">Tamilnadu</option>
                             <option value="Kerala">Kerala</option>
                             <option value="Delhi">Delhi</option>
-                            {{-- @foreach ($roles as $key => $value)
-                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
-                            @endforeach --}}
                         </select>
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="country">country</label>
                         <select class="form-select" name="country" id="country">
                             <option value="" disabled selected>Select a country</option>
                             <option value="India">India</option>
-                            {{-- @foreach ($roles as $key => $value)
-                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
-                            @endforeach --}}
                         </select>
                     </div>
+
                     <div class="col-6 mb-3">
                         <label for="mobile">Company Mobile</label>
                         <input class="form-control" name="mobile" type="number" placeholder="Enter the mobile"
@@ -140,6 +164,14 @@
                             <label class="form-check-label" for="superadmin">Super Admin</label>
                         </div> --}}
                     </div>
+                    <div class="checkbox-container">
+                        @foreach ($modules as $index => $module)
+                            <label>
+                                <input type="checkbox" name="modules[]"
+                                    value="{{ $module['id'] }}" />{{ $module['name'] }}
+                            </label>
+                        @endforeach
+                    </div>
                     <div class="mt-4 mb-0">
                         <button class="btn btn-primary float-end" type="submit">Save</button>
                     </div>
@@ -150,8 +182,8 @@
 
 
     {{-- EDIT OFFCANVAS --}}
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="editOffCanvasRight" aria-labelledby="editOffcanvasRightLabel"
-        style="width: 50%">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="editOffCanvasRight"
+        aria-labelledby="editOffcanvasRightLabel" style="width: 50%">
         <div class="offcanvas-header">
             <h5 id="editOffcanvasRightLabel">Update Client</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -173,7 +205,7 @@
                         <input class="form-control" name="editEmail" type="email" placeholder="Enter the email"
                             id="editEmail" />
                     </div>
-                    
+
                     <div class="col-12 mb-3">
                         <label for="editAddress">Company Address</label>
                         <input class="form-control" name="editAddress" type="text" placeholder="Enter the address"

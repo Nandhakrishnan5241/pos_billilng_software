@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendClientDetails;
 use App\Models\User;
 use App\Modules\Clients\Models\Client;
+use App\Modules\Module\Models\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,13 +15,22 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 class ClientController extends Controller
 {
     public function index()
     {
-        $roles = Role::get();
-        return view('clients::index', compact('roles'));
+        // $user = Auth::user(); 
+        // $client = Client::find($user->client_id);
+       
+        // $modules = $client->modules;
+        // dd($modules);
+
+        $roles     = Role::get();
+        $modules   = Module::get();
+
+        return view('clients::index', compact('roles', 'modules'));
     }
 
     public function edit($id = '')
@@ -60,6 +70,7 @@ class ClientController extends Controller
     public function save(Request $request)
     {
         try {
+            $selectedModulesId   = $request->input('modules', []);
             $request->validate([
                 'name' => ['required', 'string', 'max:255', 'unique:' . Client::class . ',company_name'],
                 'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . Client::class],
@@ -67,6 +78,7 @@ class ClientController extends Controller
                 'address' => 'required',
                 'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
+
             $imageName = time() . '.' . $request->logo->extension();
             $imagePath = 'images/clients/';
             $fullPath  = $imagePath . $imageName;
@@ -148,11 +160,75 @@ class ClientController extends Controller
                     ]);
                 }
             }
+
+
+            $requestResponse = ClientController::syncPermissionsToClient($selectedModulesId);
+            $requestResponse = ClientController::syncModulesToClient($client, $selectedModulesId);
+            if ($requestResponse) {
+                return response()->json([
+                    'status' => '1',
+                    'message' => 'Data Saved Successfully...',
+                    'data' => [],
+                ]);
+            } else {
+                return response()->json([
+                    'status' => '0',
+                    'message' => $requestResponse['message'],
+                    'data' => [],
+                ]);
+            }
+            // return response()->json([
+            //     'status' => '1',
+            //     'message' => 'Data Saved Successfully...',
+            //     'data' => [],
+            // ]);
+
+        } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
             return response()->json([
-                'status' => '1',
-                'message' => 'Data Saved Successfully...',
+                'status' => '0',
+                'message' => $allMessages[0],
                 'data' => [],
             ]);
+        }
+    }
+
+    public static function syncModulesToClient($client, $moduleIds)
+    {
+        try {
+            $client->modules()->sync($moduleIds);
+            return true;
+        } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
+            return response()->json([
+                'status' => '0',
+                'message' => $allMessages[0],
+                'data' => [],
+            ]);
+        }
+    }
+
+    public static function syncPermissionsToClient($moduleIds)
+    {
+        try {
+            $role       = Role::findByName('admin');
+            $actions    = ['create', 'view', 'edit', 'delete'];
+            $modules    = Module::whereIn('id', $moduleIds)->get();
+
+            $permissions = [];
+            foreach ($modules as $module) {
+                $moduleSlug = $module['slug'];
+
+                foreach ($actions as $action) {
+                    $permissionName = "{$moduleSlug}.{$action}";
+                    $permission     = Permission::firstOrCreate(['name' => $permissionName]);
+                    $permissions[]  = $permissionName;
+                }
+            }
+            $role->syncPermissions($permissions);
+            return true;
         } catch (ValidationException $e) {
             $errors      = $e->validator->errors();
             $allMessages = $errors->all();
@@ -184,16 +260,16 @@ class ClientController extends Controller
             ]);
 
 
-            $id          = $request->input('id');
-            $name        = $request->input('editName');
-            $email       = $request->input('editEmail');
-            $mobile      = $request->input('editMobile');
-            $address     = $request->input('editAddress');
-            $city        = $request->input('editCity');
-            $pincode     = $request->input('editPincode');
-            $state       = $request->input('editState');
-            $country     = $request->input('editCountry');
-            $superadmin  = $request->input('superadmin');
+            $id           = $request->input('id');
+            $name         = $request->input('editName');
+            $email        = $request->input('editEmail');
+            $mobile       = $request->input('editMobile');
+            $address      = $request->input('editAddress');
+            $city         = $request->input('editCity');
+            $pincode      = $request->input('editPincode');
+            $state        = $request->input('editState');
+            $country      = $request->input('editCountry');
+            $superadmin   = $request->input('superadmin');
             $subscribe    = $request->input('subscribe');
             $currentImage = $request->input('currentImage');
 
