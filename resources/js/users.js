@@ -146,7 +146,6 @@ $("#editUserForm").on("submit", function (e) {
             contentType: false,
             success: function (response) {
                 if (response.status == 1) {
-                    console.log(response)
                     Swal.fire({
                         position: "center",
                         icon: "success",
@@ -220,9 +219,6 @@ function getTableData(type) {
 
 window.getSelectedClient = function (selectElement) {
     var selectedClientId = selectElement.value;
-    console.log(selectedClientId)
-
-    // Refresh the DataTable with the selected client ID
     $('#usersTable').DataTable().ajax.reload();
 
 };
