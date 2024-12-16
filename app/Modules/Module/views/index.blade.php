@@ -14,9 +14,6 @@
     }
 </style>
 
-{{-- SWEET ALERT --}}
-<link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
-<script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
 
 @vite(['resources/js/module.js'])
 @section('content')
@@ -62,20 +59,7 @@
                         id="name" />
 
                 </div>
-                {{-- <div class="mb-3">
-                    <label for="name">Module Order</label>
-                    <input class="form-control" name="order" type="number" placeholder="Enter the module order"
-                        id="order" />
-
-                </div> --}}
-                {{-- <div class="mb-3">
-                    <label for="">Select a status</label>
-                    <select name="status" id="status" class="form-select  form-control">
-                        <option value="">Select a Status</option>
-                        <option value="0">Disable</option>
-                        <option value="1">Enable</option>
-                    </select>
-                </div> --}}
+                
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Save</button>                 
                 </div>        
@@ -101,20 +85,7 @@
                         id="editName" />
 
                 </div>
-                {{-- <div class="mb-3">
-                    <label for="name">Module Order</label>
-                    <input class="form-control" name="editOrder" type="number" placeholder="Enter the module order"
-                        id="editOrder" />
-
-                </div>
-                <div class="mb-3">
-                    <label for="">Select a status</label>
-                    <select name="editStatus" id="editStatus" class="form-select  form-control">
-                        <option value="">Select a Status</option>
-                        <option value="0">Disable</option>
-                        <option value="1">Enable</option>
-                    </select>
-                </div> --}}
+               
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Update</button>                 
                 </div>        

@@ -7,6 +7,7 @@ use App\Jobs\SendClientDetails;
 use App\Models\User;
 use App\Modules\Clients\Models\Client;
 use App\Modules\Module\Models\Module;
+use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -162,8 +163,8 @@ class ClientController extends Controller
             }
 
 
-            $requestResponse = ClientController::syncPermissionsToClient($selectedModulesId);
-            $requestResponse = ClientController::syncModulesToClient($client, $selectedModulesId);
+            $requestResponse = ClientService::syncPermissionsToClient($selectedModulesId);
+            $requestResponse = ClientService::syncModulesToClient($clientID, $selectedModulesId);
             if ($requestResponse) {
                 return response()->json([
                     'status' => '1',
@@ -177,11 +178,7 @@ class ClientController extends Controller
                     'data' => [],
                 ]);
             }
-            // return response()->json([
-            //     'status' => '1',
-            //     'message' => 'Data Saved Successfully...',
-            //     'data' => [],
-            // ]);
+           
 
         } catch (ValidationException $e) {
             $errors      = $e->validator->errors();
@@ -194,51 +191,6 @@ class ClientController extends Controller
         }
     }
 
-    public static function syncModulesToClient($client, $moduleIds)
-    {
-        try {
-            $client->modules()->sync($moduleIds);
-            return true;
-        } catch (ValidationException $e) {
-            $errors      = $e->validator->errors();
-            $allMessages = $errors->all();
-            return response()->json([
-                'status' => '0',
-                'message' => $allMessages[0],
-                'data' => [],
-            ]);
-        }
-    }
-
-    public static function syncPermissionsToClient($moduleIds)
-    {
-        try {
-            $role       = Role::findByName('admin');
-            $actions    = ['create', 'view', 'edit', 'delete'];
-            $modules    = Module::whereIn('id', $moduleIds)->get();
-
-            $permissions = [];
-            foreach ($modules as $module) {
-                $moduleSlug = $module['slug'];
-
-                foreach ($actions as $action) {
-                    $permissionName = "{$moduleSlug}.{$action}";
-                    $permission     = Permission::firstOrCreate(['name' => $permissionName]);
-                    $permissions[]  = $permissionName;
-                }
-            }
-            $role->syncPermissions($permissions);
-            return true;
-        } catch (ValidationException $e) {
-            $errors      = $e->validator->errors();
-            $allMessages = $errors->all();
-            return response()->json([
-                'status' => '0',
-                'message' => $allMessages[0],
-                'data' => [],
-            ]);
-        }
-    }
 
     public function update(Request $request)
     {

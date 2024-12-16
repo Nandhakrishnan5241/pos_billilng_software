@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Clients\Models\Client;
 use App\Modules\Module\Models\Module;
+use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,17 +58,14 @@ class PrevilegeController extends Controller
 
     public function addPermissionToRole($roleId, $clientId, $groupedData)
     {
-        
-
         if ($clientId != 0) {
             $data = json_decode($groupedData, true);
 
             $ids  = array_map(function ($item) {
                 return $item['module']['id'];
             }, $data);
-            // dd($ids);
-            $requestResponse = PrevilegeController::syncPermissionsToClient($ids);
-            $requestResponse = PrevilegeController::syncModulesToClient($clientId, $ids);
+            $requestResponse = ClientService::syncPermissionsToClient($ids);
+            $requestResponse = ClientService::syncModulesToClient($clientId, $ids);
             if ($requestResponse) {
                 return response()->json([
                     'status' => '1',
@@ -86,7 +84,6 @@ class PrevilegeController extends Controller
             try {
                 $decodeData = json_decode($groupedData, true);
                 $role       = Role::findOrFail($roleId);
-    
     
                 $permissions = [];
                 foreach ($decodeData as $data) {
@@ -115,52 +112,5 @@ class PrevilegeController extends Controller
             }
         }
         
-    }
-
-    public static function syncModulesToClient($clientId, $moduleIds)
-    {
-        try {
-            $client    = Client::find($clientId);
-            $client->modules()->sync($moduleIds);
-            return true;
-        } catch (ValidationException $e) {
-            $errors      = $e->validator->errors();
-            $allMessages = $errors->all();
-            return response()->json([
-                'status' => '0',
-                'message' => $allMessages[0],
-                'data' => [],
-            ]);
-        }
-    }
-
-    public static function syncPermissionsToClient($moduleIds)
-    {
-        try {
-            $role       = Role::findByName('admin');
-            $actions    = ['create', 'view', 'edit', 'delete'];
-            $modules    = Module::whereIn('id', $moduleIds)->get();
-
-            $permissions = [];
-            foreach ($modules as $module) {
-                $moduleSlug = $module['slug'];
-
-                foreach ($actions as $action) {
-                    $permissionName = "{$moduleSlug}.{$action}";
-                    $permission     = Permission::firstOrCreate(['name' => $permissionName]);
-                    $permissions[]  = $permissionName;
-                }
-            }
-            $role->syncPermissions($permissions);
-            return true;
-        } catch (ValidationException $e) {
-            $errors      = $e->validator->errors();
-            $allMessages = $errors->all();
-            return response()->json([
-                'status' => '0',
-                'message' => $allMessages[0],
-                'data' => [],
-            ]);
-        }
     }
 }

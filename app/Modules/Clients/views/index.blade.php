@@ -26,11 +26,8 @@
     .checkbox-container {
         display: flex;
         flex-wrap: wrap;
-        /* Allows items to wrap to the next line if needed */
         gap: 10px;
-        /* Adds space between checkboxes */
         justify-content: space-evenly;
-        /* Distributes checkboxes evenly */
     }
 
     .checkbox-container label {
@@ -38,10 +35,6 @@
         align-items: center;
     }
 </style>
-
-{{-- SWEET ALERT --}}
-<link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
-<script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
 
 @vite(['resources/js/clients.js'])
 
@@ -54,14 +47,6 @@
         @endif
     </div>
     <hr>
-    
-    {{-- @php
-        $user = Auth::user();
-        $client = \App\Modules\Clients\Models\Client::with('modules')->find($user->client_id);
-        $modules = $client ? $client->modules : collect();
-        dd($modules);
-        
-    @endphp --}}
 
     {{-- <div class="table-responsive"> --}}
     <table id="clientsTable" class="table table-bordered table-striped">

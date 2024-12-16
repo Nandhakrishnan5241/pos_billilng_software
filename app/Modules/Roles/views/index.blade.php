@@ -14,9 +14,7 @@
     }
 </style>
 
-{{-- SWEET ALERT --}}
-<link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
-<script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
+
 
 @vite(['resources/js/roles.js'])
 

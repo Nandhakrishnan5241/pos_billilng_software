@@ -14,6 +14,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    {{-- SWEET ALERT --}}
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
+
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
     <script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
 
@@ -32,13 +36,8 @@
         'resources/css/styles.css',
         'resources/css/cards.css',
         'resources/js/app.js',
-        // 'resources/js/bootstrap.js',
         'resources/js/script.js',
-        // 'resources/js/category.js',
         'resources/js/changepassword.js',
-        // 'resources/js/validation.js',
-        // 'public/plugins/jqueryvalidation/additional-methods.min.js',
-        // 'public/plugins/jqueryvalidation/jquery.validate.min.js',
         'resources/js/datatables-simple-demo.js',
     ])
 </head>
