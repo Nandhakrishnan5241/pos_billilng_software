@@ -24,7 +24,7 @@ class ClientController extends Controller
     {
         // $user = Auth::user(); 
         // $client = Client::find($user->client_id);
-       
+
         // $modules = $client->modules;
         // dd($modules);
 
@@ -178,8 +178,6 @@ class ClientController extends Controller
                     'data' => [],
                 ]);
             }
-           
-
         } catch (ValidationException $e) {
             $errors      = $e->validator->errors();
             $allMessages = $errors->all();

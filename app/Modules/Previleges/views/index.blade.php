@@ -23,8 +23,7 @@
     <div class="row mt-3">
         <div class="col-4">
             @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin')))
-                {{-- <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)"> --}}
-                <select class="form-select" name="role" id="role" >
+                <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)">
                     <option value="" disabled selected>Select a role</option>
                     @foreach ($roles as $key => $value)
                         <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
@@ -34,12 +33,11 @@
             @endif
         </div>
         <div class="col-4">
-            {{-- @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin'))) --}}
             @if ((auth()->user()->hasRole('superadmin')))
-                <select class="form-select" name="client" id="client" >
+                <select class="form-select" name="client" id="client" onchange="getSelectedClient(this)">
                     <option value="" disabled selected>Select a client</option>
                     @foreach ($clients as $key => $value)
-                        <option value="{{ $value['id'] }}">{{ $value['company_name'] }}</option>
+                        <option value="{{ $value['id'] }}">{{ $value['company_name']. $value['id']}}</option>
                     @endforeach
                 </select>
                 <div id="client-error" class="mx-2" style="color: red; display: none;">Please select a client</div>
@@ -61,7 +59,7 @@
                         {{-- <th>Disable</th> --}}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="privilegesTableBody">
                     @php
                         $i = 1;
                     @endphp
@@ -87,3 +85,8 @@
         </div>
     </div>
 @endsection
+
+<script>
+    var modules = @json($modules);
+    console.log(modules);
+</script>

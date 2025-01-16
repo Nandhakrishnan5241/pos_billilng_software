@@ -27,7 +27,7 @@
     <div class="row mt-3">
         <div class="col-4">
             @if (auth()->user()->hasRole('superadmin'))
-            <label for="client">Client</label>
+                <label for="client">Client</label>
                 <select class="form-select" name="client" id="client" onchange="getSelectedClient(this)">
                     <option value="" disabled selected>Select a client</option>
                     @foreach ($clients as $key => $value)
@@ -41,19 +41,19 @@
 
         {{-- <div class="table-responsive"> --}}
         <div class="row mt-4">
-        <table id="usersTable" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be populated by DataTables -->
-            </tbody>
-        </table>
-    </div>
+            <table id="usersTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by DataTables -->
+                </tbody>
+            </table>
+        </div>
     </div>
     {{-- </div> --}}
 
@@ -170,21 +170,26 @@
         <div class="offcanvas-body">
             <form id="userChangePasswordForm" action="{{ route('users.changepassword') }}" method="POST">
                 @csrf
-                <div class="mb-3">
-                    <label for="userpassword">New Password</label>
-                    <input class="form-control" name="userpassword" type="password" id="userpassword"
-                        placeholder="enter the new password" />
+                <div class="row align-items-center">
+                    <div class="col-10 position-relative">
+                        <label for="userpassword">New Password</label>
+                        <input class="form-control" name="userpassword" type="password" id="userpassword"
+                            placeholder="Enter the new password" />
+                        <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y my-3 mx-2"
+                            onclick="togglePasswordVisibility()">
+                            <i id="toggleIcon" class="fa-solid fa-eye bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="col-2 mt-4">
+                        <button class="btn btn-secondary float-start" type="button"
+                            onclick="generatePassword()">Generate</button>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-primary float-end" type="submit">Save</button>
+                    </div>
+                </div>
 
-                </div>
-                <div class="mb-3">
-                    <label for="userconfirmpassword">Confirm Password</label>
-                    <input class="form-control" name="userconfirmpassword" type="password" id="userconfirmpassword"
-                        placeholder="enter the confirm password" />
 
-                </div>
-                <div class="mt-4">
-                    <button class="btn btn-primary float-end" type="submit">Save</button>
-                </div>
             </form>
 
         </div>

@@ -201,6 +201,34 @@ function getTableData(type) {
     });
 }
 
+// PASSWORD GENERATE
+window.generatePassword = function () {
+    const length  = 10; // Length of the password
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+    let password  = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }
+    $('#userpassword').val(password);
+    return false;
+}
+
+window.togglePasswordVisibility = function () {
+    const passwordField = document.getElementById("userpassword");
+    const toggleIcon = document.getElementById("toggleIcon");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.remove("bi-eye");
+        toggleIcon.classList.add("bi-eye-slash");
+    } else {
+        passwordField.type = "password";
+        toggleIcon.classList.remove("bi-eye-slash");
+        toggleIcon.classList.add("bi-eye");
+    }
+}
+
 
 window.getSelectedClient = function (selectElement) {
     var selectedClientId = selectElement.value;
@@ -247,21 +275,12 @@ var changePasswordFrom = {
             required: true,
             minlength: 8,
         },
-        userconfirmpassword: {
-            required: true,
-            equalTo: "#userpassword",
-        },
     },
     messages: {
       
         userpassword: {
             required: "Password field is required",
             minlength: "Password field must be at least 8 characters",
-        },
-        userconfirmpassword: {
-            required: "Confirm field password is required",
-            equalTo:
-                "New Password field and confirm password field should same",
         },
     },
     highlight: function (element) {
@@ -296,14 +315,12 @@ $("#userChangePasswordForm").on("submit", function (e) {
         });
 
         let password        = $("#userpassword").val();
-        let confirmpassword = $("#userconfirmpassword");
         changePasswordID    = changePasswordID;
 
         let formData = new FormData();
 
         formData.append("changePasswordID", changePasswordID);
         formData.append("password", password);
-        formData.append("confirmpassword", confirmpassword);
 
         $.ajax({
             url: $(this).attr("action"),

@@ -1,19 +1,6 @@
 @extends('layouts.admin')
 
 @section('title', 'Manage Module')
-<style>
-    .validation,
-    .validation:focus {
-        color: red !important;
-        border-color: red !important;
-    }
-
-    .validation::placeholder {
-        color: red !important;
-        opacity: 1 !important;
-    }
-</style>
-
 
 @vite(['resources/js/module.js'])
 @section('content')

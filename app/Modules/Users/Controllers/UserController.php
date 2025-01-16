@@ -22,7 +22,7 @@ class UserController extends Controller
         $roles = Role::get();
         $roles = $roles->slice(1);
         $clients = Client::get();
-        return view('users::index', compact('roles','clients'));
+        return view('users::index', compact('roles', 'clients'));
     }
 
     public function save(Request $request)
@@ -52,7 +52,8 @@ class UserController extends Controller
             ]);
 
             $role         = $request->role;
-            $password     = Str::random(8) . '@' . rand(100, 999);
+            // $password     = Str::random(8) . '@' . rand(100, 999);
+            $password     = '12345678';
 
             $user                   =  User::create([
                 'name'              => $request->name,
@@ -208,9 +209,8 @@ class UserController extends Controller
 
         if ($request->has('client_id') && $request->client_id) {
             $query->where('client_id', $request->client_id);
-        }
-        else{
-            if($client_id != 1){
+        } else {
+            if ($client_id != 1) {
                 $query->where('client_id', $client_id);
             }
         }
@@ -264,11 +264,12 @@ class UserController extends Controller
                 'password' => 'required',
             ]);
             $id = $request->changePasswordID;
-            
-            $password    = $request->password;
-            $user        = User::find($id);
+
+            $password       = $request->password;
+            $user           = User::find($id);
             $user->password = $password;
             $user->save();
+            SendClientDetails::dispatch($user, $password);
 
             return response()->json([
                 'status' => 1,

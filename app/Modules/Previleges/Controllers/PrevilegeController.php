@@ -21,8 +21,7 @@ class PrevilegeController extends Controller
         $user    = Auth::user();
         $userId  = $user->id;
         $roleIds = $user->roles->pluck('id');
-        $rollId  = $roleIds[0];
-
+        $roleId  = $roleIds[0];
 
         $permissions        = Permission::get();
         $roles              = Role::get();
@@ -31,12 +30,13 @@ class PrevilegeController extends Controller
         $clients            = Client::get();
         $clients            = $clients->slice(1);
 
-        $roleHasPermissions = PrevilegeController::getPermissionsByUserIdAndRoleId($userId, $rollId);
+
+        $roleHasPermissions = PrevilegeController::getPermissionsByRoleId($roleId);
 
         return view('previleges::index', compact("roles", "modules", "permissions", "roleHasPermissions", 'clients'));
     }
 
-    public static function getPermissionsByUserIdAndRoleId($userId, $roleId)
+    public static function getPermissionsByRoleId($roleId)
     {
         $rolePermissions = [];
         try {
@@ -60,7 +60,6 @@ class PrevilegeController extends Controller
     {
         if ($clientId != 0) {
             $data = json_decode($groupedData, true);
-
             $ids  = array_map(function ($item) {
                 return $item['module']['id'];
             }, $data);
@@ -79,17 +78,16 @@ class PrevilegeController extends Controller
                     'data' => [],
                 ]);
             }
-        }
-        else{
+        } else {
             try {
                 $decodeData = json_decode($groupedData, true);
                 $role       = Role::findOrFail($roleId);
-    
+
                 $permissions = [];
                 foreach ($decodeData as $data) {
                     $moduleSlug = $data['module']['slug'];
                     $actions    = $data['actions'];
-    
+
                     foreach ($actions as $action) {
                         $permissionName = "{$moduleSlug}.{$action}";
                         $permission     = Permission::firstOrCreate(['name' => $permissionName]);
@@ -97,7 +95,7 @@ class PrevilegeController extends Controller
                     }
                 }
                 $role->syncPermissions($permissions);
-    
+
                 return response()->json([
                     'status' => '1',
                     'message' => 'Permission for the role was successfully granted....',
@@ -111,6 +109,71 @@ class PrevilegeController extends Controller
                 ]);
             }
         }
-        
+    }
+
+    public static function getPermissionModulesForClient($modules)
+    {
+        $actions    = ['create', 'view', 'edit', 'delete'];
+        $permissions = [];
+        foreach ($modules as $module) {
+            $moduleSlug = $module['slug'];
+
+            foreach ($actions as $action) {
+                $permissionName = "{$moduleSlug}.{$action}";
+                $permission     = Permission::firstOrCreate(['name' => $permissionName]);
+                $permissions[]  = $permissionName;
+            }
+        }
+        return $permissions;
+    }
+    public function getPrivilegesByClientID($clientId)
+    {
+        try {
+            $modules   = Module::get();
+
+            $moduleIds = DB::table('client_has_modules')
+                ->where('client_id', $clientId)
+                ->pluck('module_id');
+
+            $clientHasModule = DB::table('modules')
+                ->whereIn('id', $moduleIds)
+                ->get()
+                ->map(function ($module) {
+                    return (array) $module;
+                })
+                ->toArray();
+
+            $modulePermissions = PrevilegeController::getPermissionModulesForClient($clientHasModule);
+
+            return response()->json([
+                'status' => '1',
+                'message' => 'data get by client ID...',
+                'data' => ['permissions' => $modulePermissions, 'modules' => $modules]
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => '0',
+                'message' => 'data not found by client ID...',
+                'data' => [],
+            ]);
+        }
+    }
+    public function getPrivilegesByRoleID($roleId)
+    {
+        try {
+            $roleHasPermissions = PrevilegeController::getPermissionsByRoleId($roleId);
+            $modules            = Module::get();
+            return response()->json([
+                'status' => '1',
+                'message' => 'data get by role ID.',
+                'data' => ['permissions' => $roleHasPermissions, 'modules' => $modules]
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => '0',
+                'message' => 'data not found by role ID...',
+                'data' => [],
+            ]);
+        }
     }
 }

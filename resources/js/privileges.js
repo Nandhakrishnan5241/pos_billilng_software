@@ -1,16 +1,20 @@
+var roleID;
+var clientID;
+
 $(document).ready(function () {});
 // Handle "All" checkbox
-document.querySelectorAll(".all-checkbox").forEach((allCheckbox) => {
-    allCheckbox.addEventListener("change", function () {
-        const rowId = this.dataset.row;
+document.querySelector("#privilegesTable tbody").addEventListener("change", function (event) {
+    if (event.target.classList.contains("all-checkbox")) {
+        const rowId = event.target.dataset.row;
         const checkboxes = document.querySelectorAll(
             `.row-checkbox[data-row="${rowId}"]`
         );
 
+        // Set all row-specific checkboxes to match the "All" checkbox state
         checkboxes.forEach((checkbox) => {
-            checkbox.checked = this.checked;
+            checkbox.checked = event.target.checked;
         });
-    });
+    }
 });
 
 // Handle "Disable" checkbox
@@ -33,15 +37,85 @@ document.querySelectorAll(".disable-checkbox").forEach((disableCheckbox) => {
         }
     });
 });
-// var roleID;
-// window.getSelectedRole = function (selectedRole) {
-//     roleID = selectedRole.value;
-// };
-// var clientID;
-// window.getSelectedClient = function (selectedClient) {
-//     clientID = selectedClient.value;
-// };
 
+window.getSelectedRole = function (selectedRole) {
+    roleID = selectedRole.value;
+    console.log('roleID :',roleID);
+    updateCheckBoxesByRoleID(roleID)
+    
+};
+
+
+window.getSelectedClient = function (selectedClient) {
+    clientID = selectedClient.value;
+    console.log('clientID :',clientID);
+    updateCheckBoxesByClientId(clientID)
+};
+
+function updateCheckBoxesByClientId(clientID) {
+    $.get(
+        "privileges/getprivilegesbyclientid/"+ clientID  ,
+        function (response) {
+            if (response.status == 1) {
+               updateTable(response.data);
+              
+            } else {
+                console.log('else')
+            }
+        }
+    );
+}
+function updateCheckBoxesByRoleID(roleID) {
+    $.get(
+        "privileges/getprivilegesbyroleid/"+ roleID  ,
+        function (response) {
+            if (response.status == 1) {
+               updateTable(response.data);
+              
+            } else {
+                console.log('else')
+            }
+        }
+    );
+}
+
+function escapeHtml(jsonString) {
+    return jsonString.replace(/"/g, '&quot;');
+}
+
+function updateTable(data){
+    const permissions = data.permissions; // Get permissions for the selected client
+    var modules = data.modules;
+
+    const tableBody = document.getElementById('privilegesTableBody');
+
+    tableBody.innerHTML = '';
+
+    modules.forEach((module, index) => {
+        const moduleSlug = module.slug;
+        const escapedModule = escapeHtml(JSON.stringify(module));  // Escape module for HTML attribute
+        
+        // Create a new row
+        const row = document.createElement('tr');
+        row.setAttribute('data-row', index);
+    
+        // Create row HTML
+        const rowHTML = `
+            <td>${index + 1}</td>
+            <td>${module.name}</td>
+            <td><input type="checkbox" class="all-checkbox" data-row="${index}" data-module="${escapedModule}" data-action="all"></td>
+            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="${index}" data-module="${escapedModule}" data-action="create" ${permissions.includes(moduleSlug + '.create') ? 'checked' : ''}></td>
+            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="${index}" data-module="${escapedModule}" data-action="view" ${permissions.includes(moduleSlug + '.view') ? 'checked' : ''}></td>
+            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="${index}" data-module="${escapedModule}" data-action="edit" ${permissions.includes(moduleSlug + '.edit') ? 'checked' : ''}></td>
+            <td><input type="checkbox" class="row-checkbox permission-checkbox" data-row="${index}" data-module="${escapedModule}" data-action="delete" ${permissions.includes(moduleSlug + '.delete') ? 'checked' : ''}></td>
+        `;
+        
+        // Set row HTML and append to table body
+        row.innerHTML = rowHTML;
+        document.querySelector("#privilegesTable tbody").appendChild(row);
+    });
+}
+           
 window.getSelectedValues = function () {
     const selectedRole   = document.getElementById("role").value;
     const selectedClient = document.getElementById("client").value;
@@ -72,9 +146,6 @@ window.getSelectedValues = function () {
         }
     });
 
-    // console.log("Selected Role:", selectedRole);
-    // console.log("Selected Permissions:", selectedData);
-
     var data = selectedData;
 
     const groupedData = data.reduce((acc, curr) => {
@@ -91,8 +162,6 @@ window.getSelectedValues = function () {
 
         return acc;
     }, {});
-
-    // console.log(groupedData)
 
     // Convert grouped data into an array if needed
     const groupedArray = Object.keys(groupedData).map((slug) => ({

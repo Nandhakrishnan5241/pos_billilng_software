@@ -3,7 +3,7 @@
         <div class="nav">
             <hr>
             @php
-                $user = Auth::user();
+                $user        = Auth::user();
                 $client      = \App\Modules\Clients\Models\Client::find($user->client_id);
                 $modules     = $client ? $client->modules : collect();
                 $modulesList = [];
