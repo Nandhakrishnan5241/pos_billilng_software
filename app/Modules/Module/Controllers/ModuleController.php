@@ -46,29 +46,28 @@ class ModuleController extends Controller
     {
         try {
             $request->validate([
-                'name'   => ['required','unique:'. Module::class],
-                // 'order'  => 'required',
-                // 'status' => 'required',
+                'name'   => ['required', 'unique:' . Module::class],
             ]);
 
-            $name    = $request->input('name');
+            $name      = $request->input('name');
+            $dashboard = $request->input('dashboard');
+            $active    = $request->input('active');
             $slug    = strtolower(str_replace(' ', '', $name));
 
             $lastRecord             = Module::latest('id')->first();
-            if(!empty($lastRecord)){
+            if (!empty($lastRecord)) {
                 $lastRecordOrderCount   = $lastRecord->order;
-            }
-            else{
+            } else {
                 $lastRecordOrderCount = 0;
             }
-            $order   = ($request->input('order')?? ++$lastRecordOrderCount);
-            $status  = ($request->input('status') ?? '1');
+            $order   = ($request->input('order') ?? ++$lastRecordOrderCount);
 
-            $module          = new Module();
-            $module->name    = $name;
-            $module->slug    = $slug;
-            $module->order   = $order;
-            $module->status  = $status;
+            $module              = new Module();
+            $module->name        = $name;
+            $module->slug        = $slug;
+            $module->order       = $order;
+            $module->dashboard   = $dashboard;
+            $module->active      = $active;
             $module->save();
 
             return response()->json([
@@ -96,18 +95,19 @@ class ModuleController extends Controller
                     Rule::unique('modules', 'name')->ignore($request->input('id')),
                 ],
             ]);
-            $id      = $request->input('id');
-            $name    = $request->input('editName');
-            $slug    = strtolower(str_replace(' ', '', $name));
-            // $order   = $request->input('editOrder');
-            // $status  = $request->input('editStatus');
+            $id        = $request->input('id');
+            $name      = $request->input('editName');
+            $slug      = strtolower(str_replace(' ', '', $name));
+            $dashboard = $request->input('dashboard');
+            $active    = $request->input('active');
+
 
             $module          = Module::find($id);
 
             $module->name    = $name;
             $module->slug    = $slug;
-            // $module->order   = $order;
-            // $module->status  = $status;
+            $module->dashboard   = $dashboard;
+            $module->active      = $active;
             $module->save();
 
             return response()->json([
@@ -126,24 +126,30 @@ class ModuleController extends Controller
         }
     }
 
-    public function getDetails(Request $request){
+    public function getDetails(Request $request)
+    {
 
-        $columns = ['id', 'name', 'slug', 'order', 'order']; 
-        $limit = $request->input('length', 10); 
-        $start = $request->input('start', 0); 
-        $search = $request->input('search')['value']; 
+        $columns = ['id', 'name', 'slug', 'order', 'order'];
+        $limit = $request->input('length', 10);
+        $start = $request->input('start', 0);
+        $search = $request->input('search')['value'];
 
         $query = Module::query();
-       
+
         if ($search) {
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%')
-                      ->orWhere('slug', 'like', '%' . $search . '%');
+                    ->orWhere('slug', 'like', '%' . $search . '%');
             });
         }
 
-        $orderColumnIndex = $request->input('order.0.column'); 
-        $orderDirection = $request->input('order.0.dir'); 
+        // $query->where('dashboard', 1)
+        //     ->where('active', 1);
+
+        $query->orderBy('order', 'asc');
+
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir');
 
         if ($orderColumnIndex !== null) {
             $orderColumn = $columns[$orderColumnIndex];
@@ -153,27 +159,39 @@ class ModuleController extends Controller
 
         $modules = $query->skip($start)->take($limit)->get();
 
-        
-        $data = $modules->map(function ($module) {
+        $data = $modules->map(function ($module, $index) use ($modules) {
+
             $editAction   = '';
-            $deleteAction = '';            
+            $deleteAction = '';
             if (Auth::user()->can('modules.edit') || Auth::user()->hasRole('superadmin')) {
                 $editAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="editData(' . $module->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
             }
             if (Auth::user()->can('modules.delete') || Auth::user()->hasRole('superadmin')) {
                 $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="deleteData(' . $module->id . ')"><i class="fa-solid fa-trash"></i></a>';
             }
-            // $editAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="editData(' . $module->id . ')"><i class="fa-solid fa-pen-to-square"></i></a>';
 
-            // $deleteAction = '<a href="#" class="btn text-dark" data-id="' . $module->id . '" onclick="deleteData(' . $module->id . ')"><i class="fa-solid fa-trash"></i></a>';
+            if ($index == 0) {
+                $reorderButtons = '
+                    <a href="#" class="btn text-dark" onclick="moveDown(' . $module->id . ')"><i class="fa-solid fa-arrow-down"></i></a>';
+            } else if ($index == count($modules) - 1) {
+                $reorderButtons = '
+                    <a href="#" class="btn text-dark" onclick="moveUp(' . $module->id . ')"><i class="fa-solid fa-arrow-up"></i></a>';
+            } else {
+                $reorderButtons = '
+                    <a href="#" class="btn text-dark" onclick="moveUp(' . $module->id . ')"><i class="fa-solid fa-arrow-up"></i></a>
+                    <a href="#" class="btn text-dark" onclick="moveDown(' . $module->id . ')"><i class="fa-solid fa-arrow-down"></i></a>
+                ';
+            }
+            $active    = ($module->active == 1 ? '<i class="fa-solid fa-check">‌</i>' : '<i class="fa-solid fa-circle-xmark"></i>');
+            $dashboard = ($module->dashboard == 1 ? '<i class="fa-solid fa-check">‌</i>' : '<i class="fa-solid fa-circle-xmark"></i>');
 
 
             return [
                 'id' => $module->id,
                 'name' => $module->name,
-                'slug' => $module->slug,
-                'order' => $module->order,
-                'status' => $module->status,
+                'order' => $reorderButtons,
+                'active' => $active,
+                'dashboard' => $dashboard,
                 'action' => $editAction . $deleteAction,
             ];
         });
@@ -182,10 +200,69 @@ class ModuleController extends Controller
         $filteredRecords = $query->count();
 
         return response()->json([
-            'draw' => $request->input('draw'), 
-            'recordsTotal' => $totalRecords, 
-            'recordsFiltered' => $filteredRecords, 
+            'draw' => $request->input('draw'),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
             'data' => $data,
         ]);
+    }
+
+    public function moveUp($moduleId)
+    {
+        try {
+            $module   = Module::findOrFail($moduleId);
+            $previous = Module::where('order', '<', $module->order)->orderBy('order', 'desc')->first();
+
+            if ($previous) {
+                $temp            = $module->order;
+                $module->order   = $previous->order;
+                $previous->order = $temp;
+
+                $module->save();
+                $previous->save();
+            }
+            return response()->json([
+                'status' => 1,
+                'message' => 'Data Order Changed Successfully.'
+            ]);
+        } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
+            return response()->json([
+                'status' => '0',
+                'message' => $allMessages[0],
+                'data' => [],
+            ]);
+        }
+    }
+
+    public function moveDown($moduleId)
+    {
+        try {
+            $module = Module::findOrFail($moduleId);
+            $next = Module::where('order', '>', $module->order)->orderBy('order', 'asc')->first();
+
+            if ($next) {
+                $temp          = $module->order;
+                $module->order = $next->order;
+                $next->order   = $temp;
+
+                $module->save();
+                $next->save();
+            }
+
+            return response()->json([
+                'status' => 1,
+                'message' => 'Data Order Changed Successfully.'
+            ]);
+        } catch (ValidationException $e) {
+            $errors      = $e->validator->errors();
+            $allMessages = $errors->all();
+            return response()->json([
+                'status' => '0',
+                'message' => $allMessages[0],
+                'data' => [],
+            ]);
+        }
     }
 }

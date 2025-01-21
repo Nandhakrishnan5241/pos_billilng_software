@@ -27,7 +27,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        
+
         justify-content: space-evenly;
     }
 
@@ -35,8 +35,9 @@
         display: flex;
         align-items: center;
     }
-    input[type='checkbox'] { 
-        margin : 4px;
+
+    input[type='checkbox'] {
+        margin: 4px;
     }
 </style>
 
@@ -148,7 +149,6 @@
                             <input class="form-check-input" type="checkbox" name="subscribe" id="subscribe">
                             <label class="form-check-label" for="subscribe">Subscribe</label>
                         </div>
-                       
                     </div>
                     <div class="checkbox-container">
                         @foreach ($modules as $index => $module)

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name',);
             $table->string('slug');
             $table->integer('order');
-            $table->integer('status');
+            $table->integer('active')->default(1);
+            $table->integer('dashboard')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

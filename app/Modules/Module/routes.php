@@ -17,6 +17,8 @@ Route::prefix('bsadmin/module')->middleware('auth')->group(function () {
     Route::post('/update', [ModuleController::class, 'update'])->name('module.update');
     Route::get('{id}/edit', [ModuleController::class, 'edit'])->name('module.edit');
     Route::get('/delete/{id}', [ModuleController::class, 'delete'])->name('module.delete');
+    Route::get('/moveup/{moduleId}', [ModuleController::class, 'moveUP'])->name('module.moveup');
+    Route::get('/movedown/{moduleId}', [ModuleController::class, 'moveDown'])->name('module.movedown');
 });
 
 Route::prefix('bsadmin/permissions')->middleware('auth')->group(function () {

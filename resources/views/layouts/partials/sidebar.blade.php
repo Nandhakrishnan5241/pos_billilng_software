@@ -3,13 +3,14 @@
         <div class="nav">
             <hr>
             @php
-                $user        = Auth::user();
-                $client      = \App\Modules\Clients\Models\Client::find($user->client_id);
-                $modules     = $client ? $client->modules : collect();
+                $user = Auth::user();
+                $client = \App\Modules\Clients\Models\Client::find($user->client_id);
+                $modules = $client ? $client->modules : collect();
                 $modulesList = [];
-                foreach ($modules as $module){
-                    array_push($modulesList,$module->slug);
+                foreach ($modules as $module) {
+                    array_push($modulesList, $module->slug);
                 }
+                // dd($modules);
             @endphp
             <a class="nav-link" href="{{ url('bsadmin/dashboard') }}">
                 <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
@@ -48,17 +49,19 @@
                     @endif
 
                     {{-- @if (auth()->user()->can('permissions.view')) --}}
-                    @if (auth()->user()->hasRole('superadmin'))
+                    {{-- @if (auth()->user()->hasRole('superadmin'))
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ url('bsadmin/permissions') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-gear"></i></div>
                                 Permissions
                             </a>
                         </nav>
-                    @endif
+                    @endif --}}
 
-  
-                    @if ((auth()->user()->can('privileges.view') && in_array('privileges', $modulesList)) || auth()->user()->hasRole('superadmin'))
+
+                    @if (
+                        (auth()->user()->can('privileges.view') && in_array('privileges', $modulesList)) ||
+                            auth()->user()->hasRole('superadmin'))
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ url('bsadmin/privileges') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-regular fa-circle-user"></i></div>
@@ -77,7 +80,8 @@
                     @endif
 
                     {{-- @if (auth()->user()->can('clients.view')) --}}
-                    @if ((auth()->user()->can('clients.view') && in_array('clients', $modulesList)) || auth()->user()->hasRole('superadmin'))
+                    {{-- @if ((auth()->user()->can('clients.view') && in_array('clients', $modulesList)) || auth()->user()->hasRole('superadmin')) --}}
+                    @if (auth()->user()->hasRole('superadmin'))
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ url('bsadmin/clients') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
@@ -89,7 +93,9 @@
 
             @endif
 
-            @if ((auth()->user()->can('categories.view') && in_array('categories', $modulesList)) || auth()->user()->hasRole('superadmin'))
+            @if (
+                (auth()->user()->can('categories.view') && in_array('categories', $modulesList)) ||
+                    auth()->user()->hasRole('superadmin'))
                 <nav class="sb-sidenav-menu-nested nav">
                     <a class="nav-link" href="{{ url('bsadmin/category') }}">Manage Category</a>
                 </nav>

@@ -6,23 +6,11 @@ $(document).ready(function () {
             name: {
                 required: true,
             },
-            // order: {
-            //     required: true,
-            // },
-            // status: {
-            //     required: true,
-            // },
         },
         messages: {
             name: {
                 required: "Name field is required",
             },
-            // order: {
-            //     required: "Order field is required",
-            // },
-            // status: {
-            //     required: "Status field is required",
-            // },
         },
         highlight: function (element) {
             $(element).addClass("validation");
@@ -54,7 +42,11 @@ $(document).ready(function () {
                     ),
                 },
             });
-            var formData = new FormData(document.getElementById("moduleForm"));
+            var formData  = new FormData(document.getElementById("moduleForm"));
+            var dashboard = $("#dashboard").is(":checked") ? 1 : 0;
+            var active    = $("#active").is(":checked") ? 1 : 0;
+            formData.append("dashboard", dashboard);
+            formData.append("active", active);
 
             $.ajax({
                 url: $(this).attr("action"),
@@ -119,6 +111,10 @@ $("#editModuleForm").on("submit", function (e) {
             },
         });
         var formData = new FormData(document.getElementById("editModuleForm"));
+        var dashboard = $("#editDashboard").is(":checked") ? 1 : 0;
+        var active    = $("#editActive").is(":checked") ? 1 : 0;
+        formData.append("dashboard", dashboard);
+        formData.append("active", active);
 
         $.ajax({
             url: $(this).attr("action"),
@@ -172,6 +168,9 @@ $("#editModuleForm").on("submit", function (e) {
 });
 
 function getTableData(type) {
+    const tableBody = $("#modulesTable").DataTable();
+    tableBody.clear().draw();
+    tableBody.destroy();
     var table = $("#modulesTable").DataTable({
         processing: true,
         serverSide: true,
@@ -179,9 +178,9 @@ function getTableData(type) {
         ajax: "module/getdetails",
         columns: [
             { data: "name", name: "name" },
-            { data: "slug", name: "slug" },
             { data: "order", name: "order" },
-            // { data: "status", name: "status" },
+            { data: "dashboard", name: "dashboard" },
+            { data: "active", name: "active" },
             {
                 data: "action",
                 name: "action",
@@ -210,8 +209,19 @@ window.editData = function (id) {
         offcanvas.show();
         $("#id").val(data.id);
         $("#editName").val(data.name);
-        // $("#editOrder").val(data.order);
-        // $("#editStatus").val(data.status);
+        
+        if (data.dashboard === 1) {
+            $("#editDashboard").prop("checked", true); 
+        }
+        else{
+            $("#editActive").prop("checked", false); 
+        }
+        if (data.active === 1) {
+            $("#editActive").prop("checked", true); 
+        }
+        else{
+            $("#editActive").prop("checked", false); 
+        }
     });
 };
 
@@ -286,3 +296,27 @@ window.deleteData = function (id) {
         }
     });
 };
+
+
+// module order change 
+window.moveUp = function (moduleId) {
+    $.get("module/moveup/" + moduleId , function (response) {
+        if(response.status){
+            getTableData("update");
+        }
+        else{
+            console.log(response.message)
+        }
+    });
+}
+
+window.moveDown = function (moduleId) {
+    $.get("module/movedown/" + moduleId , function (response) {
+        if(response.status){
+            getTableData("update");
+        }
+        else{
+            console.log(response.message)
+        }
+    });
+}

@@ -79,7 +79,7 @@ class ClientController extends Controller
                 'address' => 'required',
                 'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
-
+            dd($request);
             $imageName = time() . '.' . $request->logo->extension();
             $imagePath = 'images/clients/';
             $fullPath  = $imagePath . $imageName;
