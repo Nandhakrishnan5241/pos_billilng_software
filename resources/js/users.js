@@ -58,6 +58,7 @@ $(document).ready(function(){
                 },
             });
             var formData = new FormData(document.getElementById("addUserForm"));
+            
 
             $.ajax({
                 url: $(this).attr("action"),
@@ -188,6 +189,7 @@ function getTableData(type) {
         columns: [
             { data: 'name', name: 'name' },
             { data: 'email', name: 'email' },
+            { data: 'role', name: 'role' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
     });
@@ -240,6 +242,7 @@ window.getSelectedClient = function (selectElement) {
 // EDIT
 window.editData = function (id) {
     $.get("users/" + id + "/edit", function (data) {
+        console.log(data);
 
         var offcanvas = new bootstrap.Offcanvas(
             document.getElementById("editOffCanvasRight")
@@ -251,7 +254,9 @@ window.editData = function (id) {
         $("#editEmail").val(data.email);
         $("#editDisplayName").val(data.display_name);
         $("#editPhone").val(data.phone);
-        $('#editRole').val(data.role);
+        // $('#editRole').val(data.role);
+        let rolesArray = Object.values(data.role);
+        $('#editRole').val(rolesArray).trigger('change');
     });
 };
 

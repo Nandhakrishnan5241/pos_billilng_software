@@ -22,11 +22,12 @@
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables/dataTables.bootstrap5.min.js') }}"></script>
 
-   
-
     @vite([
         'resources/css/styles.css',
+        
         'resources/css/cards.css',
+        'resources/intellinput/intlTelInput.css',
+        'resources/intellinput/intlTelInput.js',
         'resources/js/app.js',
         'resources/js/script.js',
         'resources/js/changepassword.js',

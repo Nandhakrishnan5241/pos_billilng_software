@@ -46,6 +46,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Role</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -83,7 +84,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="role">Role</label>
-                    <select class="form-select" name="role" id="role">
+                    <select class="form-select" name="role[]" id="role"  multiple>
                         <option value="" disabled selected>Select a role</option>
                         @foreach ($roles as $key => $value)
                             <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
@@ -95,14 +96,6 @@
                     <input class="form-control" name="phone" type="number" placeholder="Enter the mobile"
                         id="phone" />
                 </div>
-                {{-- <div class="mb-3">
-                    <label for="userpassword">Password</label>
-                    <input class="form-control" name="userpassword" type="text" placeholder="Enter the userpassword" id="userpassword" />
-                </div>
-                <div class="mb-3">
-                    <label for="userconfirmpassword">Confirm Password</label>
-                    <input class="form-control" name="userconfirmpassword" type="text" placeholder="Enter the userconfirmpassword" id="userconfirmpassword" />
-                </div> --}}
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Save</button>
                 </div>
@@ -140,7 +133,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="editRole">Role</label>
-                    <select class="form-select" name="editRole" id="editRole">
+                    <select class="form-select" name="editRole[]" id="editRole" multiple>
                         <option value="" disabled selected>Select a role</option>
                         @foreach ($roles as $key => $value)
                             <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>

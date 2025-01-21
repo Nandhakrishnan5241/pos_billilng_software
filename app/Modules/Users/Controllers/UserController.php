@@ -89,8 +89,10 @@ class UserController extends Controller
         if (!empty($id)) {
             $user = User::findOrFail($id);
             // $roleNames = $user->getRoleNames();
-            $roleName = $user->getRoleNames()->first();
-            $user->role = $roleName;
+            // $roleName = $user->getRoleNames()->first();
+            // $user->role = $roleName;
+            $userRoles = $user->roles->pluck('name', 'name')->all();
+            $user->role = $userRoles;
             return response()->json($user);
         }
     }
@@ -159,7 +161,8 @@ class UserController extends Controller
             $user->phone           = $editPhone;
             $user->save();
 
-            $user->assignRole([$role]);
+            // $user->assignRole([$role]);
+            $user->syncRoles($role);
 
             return response()->json([
                 'status' => '1',
@@ -224,8 +227,12 @@ class UserController extends Controller
         }
 
         $datas = $query->skip($start)->take($limit)->get();
-
         $data = $datas->map(function ($data) {
+            $roles = $data->getRoleNames(); // Collection of roles
+            $roleName = '';
+            foreach ($roles as $role) {
+                $roleName .= '<label class="badge bg-primary mx-1">' . $role . '</label>';
+            }
             $editAction    = '';
             $deleteAction  = '';
             $changePassword  = '';
@@ -242,6 +249,7 @@ class UserController extends Controller
                 'id' => $data->id,
                 'name' => $data->name,
                 'email' => $data->email,
+                'role' => $roleName,
                 'action' => $editAction . $deleteAction . $changePassword,
             ];
         });
