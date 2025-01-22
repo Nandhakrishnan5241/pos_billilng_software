@@ -4,6 +4,7 @@ namespace App\Modules\Clients\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendClientDetails;
+use App\Models\Timezone;
 use App\Models\User;
 use App\Modules\Clients\Models\Client;
 use App\Modules\Module\Models\Module;
@@ -27,11 +28,12 @@ class ClientController extends Controller
 
         // $modules = $client->modules;
         // dd($modules);
-
+        
         $roles     = Role::get();
         $modules   = Module::get();
+        $timezones = Timezone::get();
 
-        return view('clients::index', compact('roles', 'modules'));
+        return view('clients::index', compact('roles', 'modules','timezones'));
     }
 
     public function edit($id = '')
@@ -75,7 +77,7 @@ class ClientController extends Controller
             $request->validate([
                 'name' => ['required', 'string', 'max:255', 'unique:' . Client::class . ',company_name'],
                 'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . Client::class],
-                'mobile' => 'required',
+                'phone' => 'required',
                 'address' => 'required',
                 'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
@@ -84,30 +86,35 @@ class ClientController extends Controller
             $fullPath  = $imagePath . $imageName;
             $request->logo->move(public_path($imagePath), $imageName);
 
-            $name        = $request->input('name');
-            $email       = $request->input('email');
-            $mobile      = $request->input('mobile');
-            $address     = $request->input('address');
-            $city        = $request->input('city');
-            $pincode     = $request->input('pincode');
-            $state       = $request->input('state');
-            $country     = $request->input('country');
-            $subscribe   = $request->input('subscribe');
-            $fullPath    = '../../' . $fullPath;
+            $name          = $request->input('name');
+            $email         = $request->input('email');
+            $phone         = $request->input('phone');
+            $full_phone    = $request->input('phone_number');
+            $country_code  = $request->input('country_code');
+            $address       = $request->input('address');
+            $city          = $request->input('city');
+            $pincode       = $request->input('pincode');
+            $state         = $request->input('state');
+            $country       = $request->input('country');
+            $subscribe     = $request->input('subscribe');
+            $timezone      = $request->input('timezone');
+            $fullPath      = '../../' . $fullPath;
 
             $client                    = new Client();
 
             $client->company_name      = $name;
             $client->company_logo      = $fullPath;
             $client->email             = $email;
-            $client->mobile            = $mobile;
+            $client->phone             = $phone;
+            $client->full_phone        = $full_phone;
+            $client->country_code      = $country_code;
             $client->is_subscribed     = $subscribe;
             $client->address           = $address;
             $client->city              = $city;
             $client->pincode           = $pincode;
             $client->state             = $state;
             $client->country           = $country;
-            $client->timezone_id       = time();
+            $client->timezone_id       = $timezone;
 
 
             $client->save();
@@ -143,7 +150,9 @@ class ClientController extends Controller
                     $user->email           = $email;
                     $user->display_name    = $name;
                     $user->password        = $hashPassword;
-                    $user->phone           = $mobile;
+                    $user->phone           = $phone;
+                    $user->full_phone      = $full_phone;
+                    $user->country_code    = $country_code;
                     $user->primary_admin   = 1;
                     $user->save();
 
@@ -204,23 +213,26 @@ class ClientController extends Controller
                     'email',
                     Rule::unique('clients', 'email')->ignore($request->input('id')),
                 ],
-                'editMobile' => 'required',
+                'editPhone' => 'required',
                 'editAddress' => 'required',
             ]);
 
 
-            $id           = $request->input('id');
-            $name         = $request->input('editName');
-            $email        = $request->input('editEmail');
-            $mobile       = $request->input('editMobile');
-            $address      = $request->input('editAddress');
-            $city         = $request->input('editCity');
-            $pincode      = $request->input('editPincode');
-            $state        = $request->input('editState');
-            $country      = $request->input('editCountry');
-            $superadmin   = $request->input('superadmin');
-            $subscribe    = $request->input('subscribe');
-            $currentImage = $request->input('currentImage');
+            $id                  = $request->input('id');
+            $name                = $request->input('editName');
+            $email               = $request->input('editEmail');
+            $phone               = $request->input('editPhone');
+            $full_edited_phone   = $request->input('edit_phone_number');
+            $edit_country_code   = $request->input('edit_country_code');
+            $address             = $request->input('editAddress');
+            $city                = $request->input('editCity');
+            $pincode             = $request->input('editPincode');
+            $state               = $request->input('editState');
+            $country             = $request->input('editCountry');
+            $superadmin          = $request->input('superadmin');
+            $subscribe           = $request->input('subscribe');
+            $timezone            = $request->input('editTimezone');
+            $currentImage        = $request->input('currentImage');
 
             if (!empty($request->editLogo)) {
                 $imageName = time() . '.' . $request->editLogo->extension();
@@ -248,7 +260,9 @@ class ClientController extends Controller
             $client->company_name      = $name;
             $client->company_logo      = $fullPath;
             $client->email             = $email;
-            $client->mobile            = $mobile;
+            $client->phone             = $phone;
+            $client->full_phone        = $full_edited_phone;
+            $client->country_code      = $edit_country_code;
             $client->is_superadmin     = $superadmin;
             $client->is_subscribed     = $subscribe;
             $client->address           = $address;
@@ -256,7 +270,7 @@ class ClientController extends Controller
             $client->pincode           = $pincode;
             $client->state             = $state;
             $client->country           = $country;
-            $client->timezone_id       = time();
+            $client->timezone_id       = $timezone;
 
             $client->save();
 

@@ -1,19 +1,50 @@
-var changePasswordID = '';
-$(document).ready(function(){
-    getTableData('initial');
+var changePasswordID = "";
+$(document).ready(function () {
+    var input = document.querySelector("#phone");
+    var iti = window.intlTelInput(input, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            fetch("https://ipinfo.io/json?token=YOUR_API_TOKEN")
+                .then((response) => response.json())
+                .then((data) => callback(data.country))
+                .catch(() => callback("us"));
+        },
+        separateDialCode: true,
+        preferredCountries: ["us", "gb", "in"],
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    // edit intel
+    var editInput = document.querySelector("#editPhone");
+    window.editIti = window.intlTelInput(editInput, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            fetch("https://ipinfo.io/json?token=YOUR_API_TOKEN")
+                .then((response) => response.json())
+                .then((data) => callback(data.country))
+                .catch(() => callback("us"));
+        },
+        separateDialCode: true,
+        preferredCountries: ["us", "gb", "in"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    
+    
+    getTableData("initial");
     var formValidator = {
         rules: {
             name: {
                 required: true,
             },
-            email: { 
-                required: true, 
-                email: true 
+            email: {
+                required: true,
+                email: true,
             },
-            role: { 
-                required: true, 
+            role: {
+                required: true,
             },
-          
         },
         messages: {
             name: {
@@ -25,7 +56,6 @@ $(document).ready(function(){
             role: {
                 required: "Select a role",
             },
-           
         },
         highlight: function (element) {
             $(element).addClass("validation");
@@ -57,8 +87,14 @@ $(document).ready(function(){
                     ),
                 },
             });
+
+            var phoneNumber = iti.getNumber(); // Full phone number with country code
+            var countryData = iti.getSelectedCountryData(); // Get selected country data
+            var countryCode = countryData.dialCode; // Country code
+
             var formData = new FormData(document.getElementById("addUserForm"));
-            
+            formData.append("phone_number", phoneNumber);
+            formData.append("country_code", countryCode);
 
             $.ajax({
                 url: $(this).attr("action"),
@@ -75,8 +111,8 @@ $(document).ready(function(){
                             showConfirmButton: false,
                             timer: 1500,
                         });
-                        $("#offcanvasRight").offcanvas('hide');
-                        document.getElementById('addUserForm').reset();
+                        $("#offcanvasRight").offcanvas("hide");
+                        document.getElementById("addUserForm").reset();
                         const table = $("#usersTable").DataTable();
                         table.clear().draw();
                         table.destroy();
@@ -122,7 +158,17 @@ $("#editUserForm").on("submit", function (e) {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
         });
+
+        
+
+        const phoneNumber = editIti.getNumber(); // Full phone number with country code
+        const countryData = editIti.getSelectedCountryData(); // Get selected country data
+        const countryCode = countryData.dialCode; // Country code
+
         var formData = new FormData(document.getElementById("editUserForm"));
+
+        formData.append("edit_phone_number", phoneNumber);
+        formData.append("edit_country_code", countryCode);
 
         $.ajax({
             url: $(this).attr("action"),
@@ -139,8 +185,8 @@ $("#editUserForm").on("submit", function (e) {
                         showConfirmButton: false,
                         timer: 1500,
                     });
-                    $("#editOffCanvasRight").offcanvas('hide');
-                    document.getElementById('editUserForm').reset();
+                    $("#editOffCanvasRight").offcanvas("hide");
+                    document.getElementById("editUserForm").reset();
                     const table = $("#usersTable").DataTable();
                     table.clear().draw();
                     table.destroy();
@@ -163,7 +209,6 @@ $("#editUserForm").on("submit", function (e) {
                         errorMessage += value[0] + "<br>";
                     });
                 }
-
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
@@ -176,45 +221,51 @@ $("#editUserForm").on("submit", function (e) {
 });
 
 function getTableData(type) {
-    var table = $('#usersTable').DataTable({
+    var table = $("#usersTable").DataTable({
         processing: true,
         serverSide: true,
-        stateSave: type === 'initial' ? false : true,
+        stateSave: type === "initial" ? false : true,
         ajax: {
             url: "users/getdetails",
-            data: function(d) {
-                d.client_id = $('#client').val(); // Pass the selected client ID
-            }
+            data: function (d) {
+                d.client_id = $("#client").val(); // Pass the selected client ID
+            },
         },
         columns: [
-            { data: 'name', name: 'name' },
-            { data: 'email', name: 'email' },
-            { data: 'role', name: 'role' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
-        ]
+            { data: "name", name: "name" },
+            { data: "email", name: "email" },
+            { data: "role", name: "role" },
+            {
+                data: "action",
+                name: "action",
+                orderable: false,
+                searchable: false,
+            },
+        ],
     });
 
     // Override the default search behavior
-    $('#usersTable_filter input').unbind(); 
-    $('#usersTable_filter input').on('keypress', function (e) {
-        if (e.which === 13) { 
-            table.search(this.value).draw(); 
+    $("#usersTable_filter input").unbind();
+    $("#usersTable_filter input").on("keypress", function (e) {
+        if (e.which === 13) {
+            table.search(this.value).draw();
         }
     });
 }
 
 // PASSWORD GENERATE
 window.generatePassword = function () {
-    const length  = 10; // Length of the password
-    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-    let password  = "";
+    const length = 10; // Length of the password
+    const charset =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+    let password = "";
     for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * charset.length);
         password += charset[randomIndex];
     }
-    $('#userpassword').val(password);
+    $("#userpassword").val(password);
     return false;
-}
+};
 
 window.togglePasswordVisibility = function () {
     const passwordField = document.getElementById("userpassword");
@@ -229,20 +280,30 @@ window.togglePasswordVisibility = function () {
         toggleIcon.classList.remove("bi-eye-slash");
         toggleIcon.classList.add("bi-eye");
     }
-}
-
+};
 
 window.getSelectedClient = function (selectElement) {
     var selectedClientId = selectElement.value;
-    $('#usersTable').DataTable().ajax.reload();
-
+    $("#usersTable").DataTable().ajax.reload();
 };
-
+// GET ISO CODE(IN) INSTEAD OF DIAL CODE(91)
+function getCountryISOByDialCode(dialCode) {
+    var countryData = intlTelInputGlobals.getCountryData();
+    var country = countryData.find((c) => c.dialCode == dialCode);
+    return country ? country.iso2 : null; // Return "IN", "US", etc.
+}
 
 // EDIT
 window.editData = function (id) {
     $.get("users/" + id + "/edit", function (data) {
-        console.log(data);
+        var userPhone           = data.phone;
+        var userCountryDialCode = data.country_code;
+
+        var userCountryISO = getCountryISOByDialCode(userCountryDialCode);
+
+        if (userCountryISO && window.editIti) {
+            window.editIti.setCountry(userCountryISO.toLowerCase());
+        }
 
         var offcanvas = new bootstrap.Offcanvas(
             document.getElementById("editOffCanvasRight")
@@ -253,20 +314,26 @@ window.editData = function (id) {
         $("#editName").val(data.name);
         $("#editEmail").val(data.email);
         $("#editDisplayName").val(data.display_name);
-        $("#editPhone").val(data.phone);
-        // $('#editRole').val(data.role);
         let rolesArray = Object.values(data.role);
-        $('#editRole').val(rolesArray).trigger('change');
+        $("#editRole").val(rolesArray).trigger("change");
+
+        $("#editPhone").val(userPhone.replace(/^\+\d+/, ""));
     });
 };
 
+// Update hidden fields on country change
+$("#editPhone").on("countrychange", function () {
+    var countryData = editIti.getSelectedCountryData(); 
+    $("#edit_country_code").val(countryData.iso2.toUpperCase()); 
+});
+
 // CHANGE PASSWORD
 window.changePassword = function (id) {
-    document.getElementById('userChangePasswordForm').reset();
+    document.getElementById("userChangePasswordForm").reset();
     $.get("users/" + id + "/edit", function (data) {
         changePasswordID = data.id;
 
-        var offcanvas    = new bootstrap.Offcanvas(
+        var offcanvas = new bootstrap.Offcanvas(
             document.getElementById("changePasswordCanvas")
         );
         offcanvas.show();
@@ -275,14 +342,12 @@ window.changePassword = function (id) {
 
 var changePasswordFrom = {
     rules: {
-       
         userpassword: {
             required: true,
             minlength: 8,
         },
     },
     messages: {
-      
         userpassword: {
             required: "Password field is required",
             minlength: "Password field must be at least 8 characters",
@@ -308,19 +373,17 @@ var changePasswordFrom = {
 
 $("#userChangePasswordForm").validate(changePasswordFrom);
 
-$("#userChangePasswordForm").on("submit", function (e) {    
+$("#userChangePasswordForm").on("submit", function (e) {
     if ($("#userChangePasswordForm").valid()) {
         e.preventDefault();
         $.ajaxSetup({
             headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                    "content"
-                ),
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
         });
 
-        let password        = $("#userpassword").val();
-        changePasswordID    = changePasswordID;
+        let password = $("#userpassword").val();
+        changePasswordID = changePasswordID;
 
         let formData = new FormData();
 
@@ -342,7 +405,7 @@ $("#userChangePasswordForm").on("submit", function (e) {
                         showConfirmButton: false,
                         timer: 1500,
                     });
-                    $("#changePasswordCanvas").offcanvas('hide');
+                    $("#changePasswordCanvas").offcanvas("hide");
                     const table = $("#usersTable").DataTable();
                     table.clear().draw();
                     table.destroy();

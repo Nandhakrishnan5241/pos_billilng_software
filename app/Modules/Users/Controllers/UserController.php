@@ -19,9 +19,10 @@ class UserController extends Controller
 {
     public function index()
     {
-        $roles = Role::get();
-        $roles = $roles->slice(1);
+        $roles   = Role::get();
+        $roles   = $roles->slice(1);
         $clients = Client::get();
+        $clients = $clients->slice(1);
         return view('users::index', compact('roles', 'clients'));
     }
 
@@ -29,9 +30,12 @@ class UserController extends Controller
     {
         try {
             $user      = Auth::user();
-            $clientID  = $user->client_id;
+            if($request->client_id){
+                $clientID  = $request->client_id;
+            }else{
+                $clientID  = $user->client_id;
+            }
             $request->validate([
-                // 'name' => ['required', 'string', 'max:255', 'unique:' . User::class . ',name'],
                 'name' => [
                     'required',
                     'string',
@@ -40,7 +44,6 @@ class UserController extends Controller
                         ->ignore($clientID),
                 ],
                 'role' => 'required',
-                // 'email' => ['required', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
                 'email' => [
                     'required',
                     'email',
@@ -48,7 +51,7 @@ class UserController extends Controller
                         ->where('client_id', $clientID)
                         ->ignore($clientID),
                 ],
-                // 'userpassword' => ['required', Rules\Password::defaults()],
+                
             ]);
 
             $role         = $request->role;
@@ -61,6 +64,8 @@ class UserController extends Controller
                 'email'             => $request->email,
                 'display_name'      => $request->displayName,
                 'phone'             => $request->phone,
+                'full_phone'        => $request->phone_number,
+                'country_code'      => $request->country_code,
                 'password'          => $password,
                 // 'password'          => Hash::make($request->userpassword),
             ]);
@@ -134,11 +139,13 @@ class UserController extends Controller
                 'editEmail' => ['required', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($request->input('id'))],
             ]);
 
-            $id                    = $request->input('id');
-            $name                  = $request->input('editName');
-            $email                 = $request->input('editEmail');
-            $editDisplayName       = $request->input('editDisplayName');
-            $editPhone             = $request->input('editPhone');
+            $id                         = $request->input('id');
+            $name                       = $request->input('editName');
+            $email                      = $request->input('editEmail');
+            $editDisplayName            = $request->input('editDisplayName');
+            $editPhone                  = $request->input('editPhone');
+            $full_edited_phone          = $request->input('edit_phone_number');
+            $edit_country_code          = $request->input('edit_country_code');
 
             $user = User::findOrFail($id);
             if ($user->primary_admin == 1) {
@@ -159,6 +166,8 @@ class UserController extends Controller
             $user->email           = $email;
             $user->display_name    = $editDisplayName;
             $user->phone           = $editPhone;
+            $user->full_phone      = $full_edited_phone;
+            $user->country_code    = $edit_country_code;
             $user->save();
 
             // $user->assignRole([$role]);

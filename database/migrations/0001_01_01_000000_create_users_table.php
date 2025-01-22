@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('display_name')->nullable();
             $table->string('phone')->nullable();
+            $table->string('country_code')->nullable();
+            $table->string('full_phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('primary_admin')->default(false);

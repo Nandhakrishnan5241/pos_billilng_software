@@ -20,18 +20,20 @@ class SuperAdminSeeder extends Seeder
         $client= Client::where('is_superadmin',1)->first();
         if(empty($client)){
             $client = Client::create([
-                'company_name' => 'Super Admin',
-                'company_logo' => '../../images/clients/1733835693.png',
-                'email'        => 'superadmin@gmail.com',
-                'mobile'       => '9988774455',
-                'is_superadmin'=> 1,
-                'is_subscribed'=> 1,
-                'address'=> 'omr main road',
-                'city'=> 'chennai',
-                'pincode'=> '665544',
-                'state'=> 'Tamilnadu',
-                'country'=> 'India',
-                'timezone_id' => time()
+                'company_name'  => 'Super Admin',
+                'company_logo'  => '../../images/clients/1733835693.png',
+                'email'         => 'superadmin@gmail.com',
+                'phone'         => '9988774455',
+                'full_phone'    => '+919988774455',
+                'country_code'  => '91',
+                'is_superadmin' => 1,
+                'is_subscribed' => 1,
+                'address'       => 'omr main road',
+                'city'          => 'chennai',
+                'pincode'       => '665544',
+                'state'         => 'Tamilnadu',
+                'country'       => 'India',
+                'timezone_id'   => 1
             ]);
             $this->command->info('Superadmin client created successfully.');
         }
@@ -50,6 +52,8 @@ class SuperAdminSeeder extends Seeder
                 'display_name'  =>'Super Admin',
                 'password'      => $hashPassword, 
                 'phone'         => '9988774455',
+                'full_phone'    => '+919988774455',
+                'country_code'  => '91',
                 'primary_admin' => 1,
             ]);
             $this->command->info('Superadmin created successfully.');

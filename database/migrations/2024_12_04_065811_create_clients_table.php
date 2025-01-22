@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('company_name')->unique(); 
             $table->string('company_logo')->nullable(); 
             $table->string('email')->unique(); 
-            $table->string('mobile', 15)->nullable(); 
+            $table->string('phone', 15)->nullable(); 
+            $table->string('country_code')->nullable();
+            $table->string('full_phone')->nullable();
             $table->boolean('is_superadmin')->default(false); 
             $table->boolean('is_subscribed')->default(false); 
             $table->text('address'); 

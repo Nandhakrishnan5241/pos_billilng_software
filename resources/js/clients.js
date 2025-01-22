@@ -1,4 +1,35 @@
 $(document).ready(function () {
+
+    var input = document.querySelector("#phone");
+    var iti = window.intlTelInput(input, {
+        initialCountry: "auto", 
+        geoIpLookup: function(callback) {
+            fetch('https://ipinfo.io/json?token=YOUR_API_TOKEN')
+                .then(response => response.json())
+                .then(data => callback(data.country))
+                .catch(() => callback("us")); 
+        },
+        separateDialCode: true,
+        preferredCountries: ['us', 'gb', 'in'],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+    });
+
+    // edit intel
+    var editInput = document.querySelector("#editPhone");
+    window.editIti = window.intlTelInput(editInput, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            fetch("https://ipinfo.io/json?token=YOUR_API_TOKEN")
+                .then((response) => response.json())
+                .then((data) => callback(data.country))
+                .catch(() => callback("us"));
+        },
+        separateDialCode: true,
+        preferredCountries: ["us", "gb", "in"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+
     getTableData("initial");
 
     $("#logo").change(function (event) {
@@ -86,13 +117,17 @@ $(document).ready(function () {
                     ),
                 },
             });
-            var formData = new FormData(
-                document.getElementById("addClientForm")
-            );
-            // var superadmin = $("#superadmin").is(":checked") ? 1 : 0;
-            // formData.append("superadmin", superadmin);
+            var formData = new FormData(document.getElementById("addClientForm"));
+            var phoneNumber = iti.getNumber();  // Full phone number with country code
+            var countryData = iti.getSelectedCountryData();  // Get selected country data
+            var countryCode = countryData.dialCode;  // Country code
+
+           
             var subscribe = $("#subscribe").is(":checked") ? 1 : 0;
             formData.append("subscribe", subscribe);
+
+            formData.append("phone_number", phoneNumber);
+            formData.append("country_code", countryCode);
 
             $.ajax({
                 url: $(this).attr("action"),
@@ -214,7 +249,16 @@ $("#editClientForm").on("submit", function (e) {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
         });
+
+        const phoneNumber = editIti.getNumber(); // Full phone number with country code
+        const countryData = editIti.getSelectedCountryData(); // Get selected country data
+        const countryCode = countryData.dialCode; // Country code
+
         var formData = new FormData(document.getElementById("editClientForm"));
+
+        formData.append("edit_phone_number", phoneNumber);
+        formData.append("edit_country_code", countryCode);
+
         var superadmin = $("#editSuperadmin").is(":checked") ? 1 : 0;
         var subscribe = $("#editSubscribe").is(":checked") ? 1 : 0;
         formData.append("superadmin", superadmin);
@@ -303,9 +347,25 @@ function getTableData(type) {
     });
 }
 
+// GET ISO CODE(IN) INSTEAD OF DIAL CODE(91)
+function getCountryISOByDialCode(dialCode) {
+    var countryData = intlTelInputGlobals.getCountryData();
+    var country = countryData.find((c) => c.dialCode == dialCode);
+    return country ? country.iso2 : null; // Return "IN", "US", etc.
+}
+
 // EDIT
 window.editData = function (id) {
     $.get("clients/" + id + "/edit", function (data) {
+        console.log(data)
+        var userPhone           = data.phone;
+        var userCountryDialCode = data.country_code;
+        var userCountryISO = getCountryISOByDialCode(userCountryDialCode);
+
+        if (userCountryISO && window.editIti) {
+            window.editIti.setCountry(userCountryISO.toLowerCase());
+        }
+
         var offcanvas = new bootstrap.Offcanvas(
             document.getElementById("editOffCanvasRight")
         );
@@ -319,6 +379,7 @@ window.editData = function (id) {
         $("#editCity").val(data.city);
         $("#editPincode").val(data.pincode);
         $("#editState").val(data.state);
+        $("#editTimezone").val(data.timezone_id);
         $("#editCountry").val(data.country);
         $("#currentImage").val(data.company_logo);
         if (data.is_subscribed === 1) {
@@ -328,8 +389,16 @@ window.editData = function (id) {
         }
         $("#editImagePreview").attr("src", data.company_logo);
         $(".image-container").show();
+
+        $("#editPhone").val(userPhone.replace(/^\+\d+/, ""));
     });
 };
+
+// Update hidden fields on country change
+$("#editPhone").on("countrychange", function () {
+    var countryData = editIti.getSelectedCountryData(); 
+    $("#edit_country_code").val(countryData.iso2.toUpperCase()); 
+});
 
 // DELETE
 window.deleteData = function (id) {

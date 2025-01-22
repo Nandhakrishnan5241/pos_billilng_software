@@ -9,7 +9,7 @@
     <title>@yield('title')</title>
 
     <script src="{{ asset('plugins/fontawesome/font.min.js') }}"></script>
- 
+
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('plugins/jqueryvalidation/jquery.validate.min.js') }}"></script>
 
@@ -17,17 +17,22 @@
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.css') }}">
     <script src="{{ asset('plugins/sweetalert2/sweetalert2.js') }}"></script>
 
-    
+
     <link rel="stylesheet" href="{{ asset('plugins/datatables/dataTables.bootstrap5.min.css') }}">
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables/dataTables.bootstrap5.min.js') }}"></script>
 
+    {{-- for intel input --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+
     @vite([
         'resources/css/styles.css',
-        
+    
         'resources/css/cards.css',
-        'resources/intellinput/intlTelInput.css',
-        'resources/intellinput/intlTelInput.js',
+        // 'resources/intellinput/intlTelInput.css',
+        // 'resources/intellinput/intlTelInput.js',
         'resources/js/app.js',
         'resources/js/script.js',
         'resources/js/changepassword.js',

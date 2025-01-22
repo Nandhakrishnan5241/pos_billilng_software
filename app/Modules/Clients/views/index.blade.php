@@ -123,6 +123,17 @@
                     </div>
 
                     <div class="col-6 mb-3">
+                        <label for="timezone">Timezone</label>
+                        <select class="form-select" name="timezone" id="timezone">
+                            <option value="" disabled selected>Select a timezone</option>
+                             @foreach ($timezones as $key => $timezone)
+                                <option value="{{ $timezone['id'] }}">{{ $timezone['name'] }}</option>
+                            @endforeach
+                            
+                        </select>
+                    </div>
+
+                    <div class="col-6 mb-3">
                         <label for="country">country</label>
                         <select class="form-select" name="country" id="country">
                             <option value="" disabled selected>Select a country</option>
@@ -132,9 +143,11 @@
 
                     <div class="col-6 mb-3">
                         <label for="mobile">Company Mobile</label>
-                        <input class="form-control" name="mobile" type="number" placeholder="Enter the mobile"
-                            id="mobile" />
+                        <input type="tel" id="phone" name="phone" class="form-control" />
                     </div>
+                    <!-- Hidden fields for phone number and country code -->
+                    <input type="hidden" id="phone_number" name="phone_number">
+                    <input type="hidden" id="country_code" name="country_code">
 
                     <div class="col-6 mb-3">
                         <label for="logo">Company Logo</label>
@@ -144,7 +157,7 @@
                             <img id="imagePreview" class="image-preview" src="{{ asset('') }}" alt="Image Preview">
                         </div>
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-12 mb-3">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" name="subscribe" id="subscribe">
                             <label class="form-check-label" for="subscribe">Subscribe</label>
@@ -224,21 +237,32 @@
                     </div>
 
                     <div class="col-6 mb-3">
-                        <label for="editCountry">country</label>
-                        <select class="form-select" name="editCountry" id="editCountry">
-                            <option value="" disabled selected>Select a country</option>
-                            <option value="India">India</option>
-                            {{-- @foreach ($roles as $key => $value)
-                                <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
-                            @endforeach --}}
+                        <label for="editTimezone">Timezone</label>
+                        <select class="form-select" name="editTimezone" id="editTimezone">
+                            <option value="" disabled selected>Select a timezone</option>
+                             @foreach ($timezones as $key => $timezone)
+                                <option value="{{ $timezone['id'] }}">{{ $timezone['name'] }}</option>
+                            @endforeach
+                            
                         </select>
                     </div>
 
                     <div class="col-6 mb-3">
-                        <label for="editMobile">Company Mobile</label>
-                        <input class="form-control" name="editMobile" type="number" placeholder="Enter the mobile"
-                            id="editMobile" />
+                        <label for="editCountry">country</label>
+                        <select class="form-select" name="editCountry" id="editCountry">
+                            <option value="" disabled selected>Select a country</option>
+                            <option value="India">India</option>
+                        </select>
                     </div>
+
+                    <div class="col-6 mb-3">
+                        <label for="editPhone">Company Mobile</label>
+                        <input class="form-control" name="editPhone" type="tel" placeholder="Enter the phone"
+                            id="editPhone" />
+                    </div>
+                     <!-- Hidden fields for phone number and country code -->
+                     <input type="hidden" id="edit_phone_number" name="edit_phone_number">
+                     <input type="hidden" id="edit_country_code" name="edit_country_code">
 
                     <div class="col-6 mb-3">
                         <label for="editLogo">Company Logo</label>
@@ -250,15 +274,11 @@
                                 alt="Image Preview">
                         </div>
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-12 mb-3">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" name="editSubscribe" id="editSubscribe">
                             <label class="form-check-label" for="editSubscribe">Subscribe</label>
                         </div>
-                        {{-- <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="editSuperadmin" id="editSuperadmin">
-                            <label class="form-check-label" for="editSuperadmin">Super Admin</label>
-                        </div> --}}
                     </div>
                     <div class="mt-4 mb-0">
                         <button class="btn btn-primary float-end" type="submit">Save</button>

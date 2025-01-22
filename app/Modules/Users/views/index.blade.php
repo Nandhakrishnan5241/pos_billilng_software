@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 
+
 @section('title', 'Manage Users')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
 <style>
     .validation,
     .validation:focus {
@@ -83,8 +87,19 @@
                     <input class="form-control" name="email" type="email" placeholder="Enter the name" id="email" />
                 </div>
                 <div class="mb-3">
+                    @if (auth()->user()->hasRole('superadmin'))
+                        <label for="client_id">Client</label>
+                        <select class="form-select" name="client_id" id="client_id">
+                            <option value="" disabled selected>Select a client</option>
+                            @foreach ($clients as $key => $value)
+                                <option value="{{ $value['id'] }}">{{ $value['company_name'] }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                </div>
+                <div class="mb-3">
                     <label for="role">Role</label>
-                    <select class="form-select" name="role[]" id="role"  multiple>
+                    <select class="form-select" name="role[]" id="role" multiple>
                         <option value="" disabled selected>Select a role</option>
                         @foreach ($roles as $key => $value)
                             <option value="{{ $value['name'] }}">{{ $value['name'] }}</option>
@@ -92,10 +107,15 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="phone">Mobile</label>
-                    <input class="form-control" name="phone" type="number" placeholder="Enter the mobile"
-                        id="phone" />
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" required />
                 </div>
+
+
+                <!-- Hidden fields for phone number and country code -->
+                <input type="hidden" id="phone_number" name="phone_number">
+                <input type="hidden" id="country_code" name="country_code">
+
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Save</button>
                 </div>
@@ -131,6 +151,17 @@
                     <input class="form-control" name="editEmail" type="email" placeholder="Enter the name"
                         id="editEmail" />
                 </div>
+                {{-- <div class="mb-3">
+                    @if (auth()->user()->hasRole('superadmin'))
+                        <label for="edit_client_id">Client</label>
+                        <select class="form-select" name="edit_client_id" id="edit_client_id">
+                            <option value="" disabled selected>Select a client</option>
+                            @foreach ($clients as $key => $value)
+                                <option value="{{ $value['id'] }}">{{ $value['company_name'] }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                </div> --}}
                 <div class="mb-3">
                     <label for="editRole">Role</label>
                     <select class="form-select" name="editRole[]" id="editRole" multiple>
@@ -142,9 +173,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="editPhone">Mobile</label>
-                    <input class="form-control" name="editPhone" type="number" placeholder="Enter the mobile"
+                    <input class="form-control" name="editPhone" type="tel" placeholder="Enter the mobile"
                         id="editPhone" />
                 </div>
+
+                <input type="hidden" id="edit_phone_number" name="edit_phone_number">
+                <input type="hidden" id="edit_country_code" name="edit_country_code">
+
                 <div class="mt-4 mb-0">
                     <button class="btn btn-primary float-end" type="submit">Save</button>
                 </div>
