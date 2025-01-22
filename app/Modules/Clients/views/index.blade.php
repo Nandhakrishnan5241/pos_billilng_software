@@ -26,9 +26,8 @@
     .checkbox-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-
-        justify-content: space-evenly;
+        gap: 20px;
+        /* justify-content: space-between; */
     }
 
     .checkbox-container label {

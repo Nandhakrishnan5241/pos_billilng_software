@@ -30,7 +30,7 @@ class ClientController extends Controller
         // dd($modules);
         
         $roles     = Role::get();
-        $modules   = Module::get();
+        $modules   = Module::where('dashboard', 1)->get();
         $timezones = Timezone::get();
 
         return view('clients::index', compact('roles', 'modules','timezones'));
