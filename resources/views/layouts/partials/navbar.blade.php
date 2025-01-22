@@ -3,6 +3,7 @@
         color: #dc3545;
         font-size: 14px;
     }
+
     .validation,
     .validation:focus {
         color: red !important;
@@ -15,15 +16,16 @@
     }
 </style>
 @php
-    $user        = Auth::user();
-    $client      = \App\Modules\Clients\Models\Client::find($user->client_id);
+    $user = Auth::user();
+    $client = \App\Modules\Clients\Models\Client::find($user->client_id);
     $companyLogo = $client->company_logo;
 @endphp
 @vite(['resources/js/changepassword.js'])
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
     <div class="company-logo">
-        <a class="navbar-brand ps-3" href="{{ url('bsadmin/dashboard') }}"><img src="{{$companyLogo}}" alt=""></a>
+        <a class="navbar-brand ps-3" href="{{ url('bsadmin/dashboard') }}"><img src="{{ $companyLogo }}"
+                alt=""></a>
     </div>
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
@@ -36,7 +38,7 @@
         </div>
     </form> --}}
     <!-- Navbar-->
-    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+    <ul class="navbar-nav ms-auto">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -69,7 +71,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>                
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -77,18 +79,21 @@
                     @csrf
                     <div class="mb-3">
                         <label for="password">Old Password</label>
-                        <input class="form-control" name="password" type="password" placeholder="enter the password" id="password" />
-                        
+                        <input class="form-control" name="password" type="password" placeholder="enter the password"
+                            id="password" />
+
                     </div>
                     <div class="mb-3">
-                         <label for="newpassword">New Password</label>
-                        <input class="form-control" name="newpassword" type="password" id="newpassword" placeholder="enter the new password" />
-                       
+                        <label for="newpassword">New Password</label>
+                        <input class="form-control" name="newpassword" type="password" id="newpassword"
+                            placeholder="enter the new password" />
+
                     </div>
                     <div class="mb-3">
                         <label for="confirmpassword">Confirm Password</label>
-                        <input class="form-control" name="confirmpassword" type="password" id="confirmpassword" placeholder="enter the confirm password"/>
-                        
+                        <input class="form-control" name="confirmpassword" type="password" id="confirmpassword"
+                            placeholder="enter the confirm password" />
+
                     </div>
 
                     {{-- <div class="modal-footer">

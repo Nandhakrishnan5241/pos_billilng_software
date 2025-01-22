@@ -11,6 +11,7 @@ use App\Modules\Module\Models\Module;
 use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -40,7 +41,15 @@ class ClientController extends Controller
     {
         if (!empty($id)) {
             $client = Client::findOrFail($id);
-            return response()->json($client);
+            $moduleIds = DB::table('client_has_modules')
+                ->where('client_id', $id)
+                ->pluck('module_id');
+            return response()->json([
+                'status' => '1',
+                'message' => 'data get by client ID...',
+                'data' => ['client' => $client, 'moduleIds' => $moduleIds]
+            ]);
+            // return response()->json($client,$moduleIds);
         }
     }
 
@@ -62,7 +71,6 @@ class ClientController extends Controller
     public static function deleteUserByClientByID($clientID)
     {
         try {
-            // $user        = User::where('client_id', $clientID)->first();
             $deletedRows   = User::where('client_id', $clientID)->delete();
             return true;
         } catch (\Exception $e) {
@@ -170,9 +178,9 @@ class ClientController extends Controller
                 }
             }
 
-
             $requestResponse = ClientService::syncPermissionsToClient($selectedModulesId);
             $requestResponse = ClientService::syncModulesToClient($clientID, $selectedModulesId);
+            
             if ($requestResponse) {
                 return response()->json([
                     'status' => '1',
@@ -234,6 +242,8 @@ class ClientController extends Controller
             $timezone            = $request->input('editTimezone');
             $currentImage        = $request->input('currentImage');
 
+            $selectedModulesId   = $request->input('editModules', []);
+
             if (!empty($request->editLogo)) {
                 $imageName = time() . '.' . $request->editLogo->extension();
                 $imagePath = 'images/clients/';
@@ -273,6 +283,9 @@ class ClientController extends Controller
             $client->timezone_id       = $timezone;
 
             $client->save();
+
+            $requestResponse = ClientService::syncPermissionsToClient($selectedModulesId);
+            $requestResponse = ClientService::syncModulesToClient($id, $selectedModulesId);
 
             return response()->json([
                 'status' => '1',
@@ -343,9 +356,8 @@ class ClientController extends Controller
                 'id' => $data->id,
                 'company_name' => $data->company_name,
                 'email' => $data->email,
-                'mobile' => $data->mobile,
+                'mobile' => $data->phone,
                 'company_logo' => '<img src="' . Storage::url($data->company_logo) . '" width="100" >',
-                // 'company_logo' => $data->company_logo,
                 'action' => $editAction . $deleteAction,
             ];
         });

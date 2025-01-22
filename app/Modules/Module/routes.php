@@ -69,6 +69,7 @@ Route::prefix('bsadmin/privileges')->middleware('auth')->group(function () {
     Route::get('/test', [PrevilegeController::class, 'test']);
     Route::get('/getprivilegesbyclientid/{clientID}', [PrevilegeController::class, 'getPrivilegesByClientID']);
     Route::get('/getprivilegesbyroleid/{roleID}', [PrevilegeController::class, 'getPrivilegesByRoleID']);
+    Route::get('/getprivilegesbyclientandroleid/{roleID}/{clientID}', [PrevilegeController::class, 'getPrivilegesByClientAndRoldID']);
 });
 
 Route::fallback(function () {

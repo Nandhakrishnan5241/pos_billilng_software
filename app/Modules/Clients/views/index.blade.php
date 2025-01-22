@@ -279,6 +279,14 @@
                             <label class="form-check-label" for="editSubscribe">Subscribe</label>
                         </div>
                     </div>
+                    <div class="checkbox-container">
+                        @foreach ($modules as $index => $module)
+                            <label>
+                                <input type="checkbox" name="editModules[]"
+                                    value="{{ $module['id'] }}" />{{ $module['name'] }}
+                            </label>
+                        @endforeach
+                    </div>
                     <div class="mt-4 mb-0">
                         <button class="btn btn-primary float-end" type="submit">Save</button>
                     </div>

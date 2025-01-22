@@ -1,7 +1,17 @@
 var roleID;
 var clientID;
 
-$(document).ready(function () {});
+$(document).ready(function () {
+    let role = $("#role");
+    if (role.find("option").length > 1) {
+        role.prop("selectedIndex", 1).trigger("change");
+    }
+    let client = $("#client");
+    if (client.find("option").length > 1) {
+        client.prop("selectedIndex", 1).trigger("change");
+    }
+    updatePrivilegesByClientAndRoleID();
+});
 // Handle "All" checkbox
 document.querySelector("#privilegesTable tbody").addEventListener("change", function (event) {
     if (event.target.classList.contains("all-checkbox")) {
@@ -20,7 +30,7 @@ document.querySelector("#privilegesTable tbody").addEventListener("change", func
 // Handle "Disable" checkbox
 document.querySelectorAll(".disable-checkbox").forEach((disableCheckbox) => {
     disableCheckbox.addEventListener("change", function () {
-        const rowId = this.dataset.row;
+        const rowId       = this.dataset.row;
         const allCheckbox = document.querySelector(
             `.all-checkbox[data-row="${rowId}"]`
         );
@@ -37,21 +47,39 @@ document.querySelectorAll(".disable-checkbox").forEach((disableCheckbox) => {
         }
     });
 });
-
+/**--------------------------------currently not in use------------------------------------- */
 window.getSelectedRole = function (selectedRole) {
     roleID = selectedRole.value;
     console.log('roleID :',roleID);
     updateCheckBoxesByRoleID(roleID)
-    
 };
 
-
+/**--------------------------------currently not in use------------------------------------- */
 window.getSelectedClient = function (selectedClient) {
     clientID = selectedClient.value;
     console.log('clientID :',clientID);
     updateCheckBoxesByClientId(clientID)
 };
 
+/**----------------------------update privileges by both client and role ID--------------------------- */
+window.updatePrivilegesByClientAndRoleID = function(){
+    const roleId   = $('#role').val();
+    const clientId = $('#client').val();
+    console.log('roleid :',roleId, 'clientid : ',clientId)
+    $.get(
+        "privileges/getprivilegesbyclientandroleid/"+ roleId + "/" + clientId,
+        function (response) {
+            if (response.status == 1) {
+               updateTable(response.data);
+              
+            } else {
+                console.log('else')
+            }
+        }
+    );
+
+}
+/**----------------------------update privileges only by client ID--------------------------- */
 function updateCheckBoxesByClientId(clientID) {
     $.get(
         "privileges/getprivilegesbyclientid/"+ clientID  ,
@@ -65,6 +93,7 @@ function updateCheckBoxesByClientId(clientID) {
         }
     );
 }
+/**----------------------------update privileges only by role ID--------------------------- */
 function updateCheckBoxesByRoleID(roleID) {
     $.get(
         "privileges/getprivilegesbyroleid/"+ roleID  ,

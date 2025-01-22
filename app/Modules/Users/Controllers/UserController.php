@@ -122,7 +122,7 @@ class UserController extends Controller
     public static function deleteClientByClientByID($id)
     {
         try {
-            $client          = Client::findOrFail($id);
+            $client        = Client::findOrFail($id);
             $deletedRows   = Client::where('id', $id)->delete();
             return true;
         } catch (\Exception $e) {
@@ -256,7 +256,7 @@ class UserController extends Controller
             }
             return [
                 'id' => $data->id,
-                'name' => $data->name,
+                'name' => $data->display_name,
                 'email' => $data->email,
                 'role' => $roleName,
                 'action' => $editAction . $deleteAction . $changePassword,

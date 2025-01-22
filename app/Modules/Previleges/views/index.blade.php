@@ -23,7 +23,8 @@
     <div class="row mt-3">
         <div class="col-4">
             @if (auth()->user()->can('privileges.create') || (auth()->user()->hasRole('superadmin')))
-                <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)">
+                {{-- <select class="form-select" name="role" id="role" onchange="getSelectedRole(this)"> --}}
+                <select class="form-select" name="role" id="role" onchange="updatePrivilegesByClientAndRoleID()">
                     <option value="" disabled selected>Select a role</option>
                     @foreach ($roles as $key => $value)
                         <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
@@ -34,10 +35,11 @@
         </div>
         <div class="col-4">
             @if ((auth()->user()->hasRole('superadmin')))
-                <select class="form-select" name="client" id="client" onchange="getSelectedClient(this)">
+                {{-- <select class="form-select" name="client" id="client" onchange="getSelectedClient(this)"> --}}
+                <select class="form-select" name="client" id="client" onchange="updatePrivilegesByClientAndRoleID()">
                     <option value="" disabled selected>Select a client</option>
                     @foreach ($clients as $key => $value)
-                        <option value="{{ $value['id'] }}">{{ $value['company_name']. $value['id']}}</option>
+                        <option value="{{ $value['id'] }}">{{ $value['company_name']}}</option>
                     @endforeach
                 </select>
                 <div id="client-error" class="mx-2" style="color: red; display: none;">Please select a client</div>

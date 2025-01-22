@@ -271,9 +271,7 @@ $("#editClientForm").on("submit", function (e) {
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response);
                 if (response.status == 1) {
-                    console.log(response);
                     Swal.fire({
                         position: "center",
                         icon: "success",
@@ -356,11 +354,12 @@ function getCountryISOByDialCode(dialCode) {
 
 // EDIT
 window.editData = function (id) {
-    $.get("clients/" + id + "/edit", function (data) {
-        console.log(data)
-        var userPhone           = data.phone;
-        var userCountryDialCode = data.country_code;
-        var userCountryISO = getCountryISOByDialCode(userCountryDialCode);
+    $.get("clients/" + id + "/edit", function (response) {
+        const client              = response.data.client;
+        const selectedModulesId   = response.data.moduleIds;
+        var userPhone             = client.phone;
+        var userCountryDialCode   = client.country_code;
+        var userCountryISO        = getCountryISOByDialCode(userCountryDialCode);
 
         if (userCountryISO && window.editIti) {
             window.editIti.setCountry(userCountryISO.toLowerCase());
@@ -371,26 +370,35 @@ window.editData = function (id) {
         );
         offcanvas.show();
 
-        $("#id").val(data.id);
-        $("#editName").val(data.company_name);
-        $("#editEmail").val(data.email);
-        $("#editMobile").val(data.mobile);
-        $("#editAddress").val(data.address);
-        $("#editCity").val(data.city);
-        $("#editPincode").val(data.pincode);
-        $("#editState").val(data.state);
-        $("#editTimezone").val(data.timezone_id);
-        $("#editCountry").val(data.country);
-        $("#currentImage").val(data.company_logo);
-        if (data.is_subscribed === 1) {
+        $("#id").val(client.id);
+        $("#editName").val(client.company_name);
+        $("#editEmail").val(client.email);
+        $("#editMobile").val(client.mobile);
+        $("#editAddress").val(client.address);
+        $("#editCity").val(client.city);
+        $("#editPincode").val(client.pincode);
+        $("#editState").val(client.state);
+        $("#editTimezone").val(client.timezone_id);
+        $("#editCountry").val(client.country);
+        $("#currentImage").val(client.company_logo);
+        if (client.is_subscribed === 1) {
             $("#editSubscribe").prop("checked", true); 
         } else {
             $("#editSubscribe").prop("checked", false); 
         }
-        $("#editImagePreview").attr("src", data.company_logo);
+        $("#editImagePreview").attr("src", client.company_logo);
         $(".image-container").show();
 
         $("#editPhone").val(userPhone.replace(/^\+\d+/, ""));
+        // check checkboxes by selected module ids
+        $("input[name='editModules[]']").each(function () {
+            let moduleId = $(this).val();
+            if (selectedModulesId.includes(parseInt(moduleId))) {
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+        });
     });
 };
 

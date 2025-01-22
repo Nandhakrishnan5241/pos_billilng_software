@@ -6,3 +6,11 @@
 commands : 
 *************
 php artisan make:controller App/Modules/Previleges/Controllers/PrevilegeController
+
+
+after migrate run thses seeder files :
+******************************************
+1. php artisan db:seed --class=SuperadminSeeder
+2. php artisan db:seed --class=PermissionSeeder
+3. php artisan db:seed --class=ModuleSeeder
+4. php artisan db:seed --class=TimeZoneSeeder
