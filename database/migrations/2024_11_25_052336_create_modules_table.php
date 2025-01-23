@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name',);
             $table->string('slug');
+            $table->string('icon');
+            $table->string('url');
+            $table->string('tab');
             $table->integer('order');
             $table->integer('active')->default(1);
             $table->integer('dashboard')->default(1);

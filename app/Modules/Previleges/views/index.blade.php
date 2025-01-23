@@ -47,7 +47,7 @@
             <input type="hidden" name="client" id="client" value="0">
             @endif
         </div>
-        <div class="mt-3">
+        <div class="mt-3" id="privelegesTable" style="display: none;">
             <table id="privilegesTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>

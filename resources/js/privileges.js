@@ -50,14 +50,12 @@ document.querySelectorAll(".disable-checkbox").forEach((disableCheckbox) => {
 /**--------------------------------currently not in use------------------------------------- */
 window.getSelectedRole = function (selectedRole) {
     roleID = selectedRole.value;
-    console.log('roleID :',roleID);
     updateCheckBoxesByRoleID(roleID)
 };
 
 /**--------------------------------currently not in use------------------------------------- */
 window.getSelectedClient = function (selectedClient) {
     clientID = selectedClient.value;
-    console.log('clientID :',clientID);
     updateCheckBoxesByClientId(clientID)
 };
 
@@ -65,19 +63,18 @@ window.getSelectedClient = function (selectedClient) {
 window.updatePrivilegesByClientAndRoleID = function(){
     const roleId   = $('#role').val();
     const clientId = $('#client').val();
-    console.log('roleid :',roleId, 'clientid : ',clientId)
     $.get(
         "privileges/getprivilegesbyclientandroleid/"+ roleId + "/" + clientId,
         function (response) {
             if (response.status == 1) {
                updateTable(response.data);
+               $('#privelegesTable').show();
               
             } else {
                 console.log('else')
             }
         }
     );
-
 }
 /**----------------------------update privileges only by client ID--------------------------- */
 function updateCheckBoxesByClientId(clientID) {
@@ -205,9 +202,11 @@ window.getSelectedValues = function () {
 };
 
 function addPrivilegesToTable(selectedRole, selectedClient, groupedArray) {
-    let data = JSON.stringify(groupedArray);
+    let data        = JSON.stringify(groupedArray);
+    let encodedData = encodeURIComponent(data);
+    console.log(encodedData)
     $.get(
-        "privileges/addpermission/" + selectedRole + "/" + selectedClient + "/" +data ,
+        "privileges/addpermission/" + selectedRole + "/" + selectedClient + "/" + encodedData ,
         function (response) {
             if (response.status == 1) {
                 Swal.fire({

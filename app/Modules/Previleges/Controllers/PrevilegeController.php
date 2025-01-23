@@ -25,11 +25,13 @@ class PrevilegeController extends Controller
 
         $permissions        = Permission::get();
         $roles              = Role::get();
-        $roles              = $roles->slice(1);
+        
         $modules            = Module::get();
         $clients            = Client::get();
-        $clients            = $clients->slice(1);
-
+        if (!auth()->user()->hasRole('superadmin')) {
+            $roles              = $roles->slice(1);
+            $clients            = $clients->slice(1);
+        }
 
         $roleHasPermissions = PrevilegeController::getPermissionsByRoleId($roleId);
 
@@ -188,7 +190,8 @@ class PrevilegeController extends Controller
             }
             // PrevilegeController::getPrivilegesByRoleID($roleId);
             // PrevilegeController::getPrivilegesByClientID($clientId);
-            $modules = DB::table('client_has_modules')
+            $modules = Module::get();
+            $selectedModulesmodules = DB::table('client_has_modules')
                 ->join('model_has_roles', 'model_has_roles.model_id', '=', 'client_has_modules.client_id')
                 ->join('modules', 'modules.id', '=', 'client_has_modules.module_id')
                 ->where('model_has_roles.role_id', $roleId)
@@ -196,8 +199,12 @@ class PrevilegeController extends Controller
                 ->select('modules.*')
                 ->get();
 
-            $modules         = json_decode(json_encode($modules), true);
-            $clientHasModule = PrevilegeController::getPermissionModulesForClient($modules);
+            $selectedModulesmodules         = json_decode(json_encode($selectedModulesmodules), true);
+            if($clientId == 1 && $roleId == 1){
+                $clientHasModule = PrevilegeController::getPermissionsByRoleId($roleId);
+            }else{
+                $clientHasModule    = PrevilegeController::getPermissionModulesForClient($selectedModulesmodules);
+            }
 
             return response()->json([
                 'status' => '1',

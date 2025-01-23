@@ -64,9 +64,10 @@ Route::prefix('bsadmin/clients')->middleware('auth')->group(function () {
 
 Route::prefix('bsadmin/privileges')->middleware('auth')->group(function () {
     // Route::get('/', [PrevilegeController::class, 'index']);
+    
     Route::get('/', [PrevilegeController::class, 'index'])->middleware('check.permission:privileges.view');
     Route::get('/addpermission/{roleId}/{clientId}/{data}', [PrevilegeController::class, 'addPermissionToRole']);
-    Route::get('/test', [PrevilegeController::class, 'test']);
+    // Route::post('/addpermission', [PrevilegeController::class, 'addPermissionToRole']);
     Route::get('/getprivilegesbyclientid/{clientID}', [PrevilegeController::class, 'getPrivilegesByClientID']);
     Route::get('/getprivilegesbyroleid/{roleID}', [PrevilegeController::class, 'getPrivilegesByRoleID']);
     Route::get('/getprivilegesbyclientandroleid/{roleID}/{clientID}', [PrevilegeController::class, 'getPrivilegesByClientAndRoldID']);
