@@ -17,7 +17,7 @@ class ModuleSeeder extends Seeder
         Module::firstOrCreate([
             'name' => 'Admin',
             'slug' => 'admin',
-            'icon' => '<i class="fa-solid fa-list"></i>',
+            'icon' => 'fa-solid fa-user-secret',
             'url'  => 'admin',
             'tab'  => 'administration',
             'order' => 1
@@ -25,15 +25,15 @@ class ModuleSeeder extends Seeder
         Module::firstOrCreate([
             'name' => 'Modules',
             'slug' => 'modules',
-            'icon' => '<i class="fa-solid fa-user-secret"></i>',
-            'url'  => 'modules',
+            'icon' => 'fa-solid fa-bars',
+            'url'  => 'module',
             'tab'  => 'administration',
             'order' => 2
         ]);
         Module::firstOrCreate([
             'name' => 'Roles',
             'slug' => 'roles',
-            'icon' => '<i class="fa-solid fa-user-secret"></i>',
+            'icon' => 'fa-solid fa-user-gear',
             'url'  => 'roles',
             'tab'  => 'administration',
             'order' => 3
@@ -41,7 +41,7 @@ class ModuleSeeder extends Seeder
         Module::firstOrCreate([
             'name' => 'Permissions',
             'slug' => 'permissions',
-            'icon' => '<i class="fa-solid fa-gear">',
+            'icon' => 'fa-solid fa-shield-halved',
             'url'  => 'permissions',
             'tab'  => 'administration',
             'order' => 4
@@ -49,7 +49,7 @@ class ModuleSeeder extends Seeder
         Module::firstOrCreate([
             'name' => 'Privileges',
             'slug' => 'privileges',
-            'icon' => '<i class="fa-regular fa-circle-user"></i>',
+            'icon' => 'fa-solid fa-user-shield',
             'url'  => 'privileges',
             'tab'  => 'administration',
             'order' => 5
@@ -58,24 +58,24 @@ class ModuleSeeder extends Seeder
         Module::firstOrCreate([
             'name' => 'Users',
             'slug' => 'users',
-            'icon' => '<i class="fa-solid fa-user"></i>',
-            'url'  => 'modules',
+            'icon' => 'fa-solid fa-users',
+            'url'  => 'users',
             'tab'  => 'administration',
             'order' => 6,
         ]);
         Module::firstOrCreate([
             'name' => 'Clients',
             'slug' => 'clients',
-            'icon' => '<i class="fa-solid fa-user"></i>',
+            'icon' => 'fa-solid fa-users-rectangle',
             'url'  => 'clients',
             'tab'  => 'administration',
             'order' => 7,
         ]);
         Module::firstOrCreate([
-            'name' => 'Categories',
+            'name' => 'categories',
             'slug' => 'categories',
-            'icon' => '<i class="fa-solid fa-user-secret"></i>',
-            'url'  => 'categories',
+            'icon' => 'fa-solid fa-cart-shopping',
+            'url'  => 'category',
             'tab'  => 'outer',
             'order' => 8
         ]);

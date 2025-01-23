@@ -63,6 +63,21 @@ window.getSelectedClient = function (selectedClient) {
 window.updatePrivilegesByClientAndRoleID = function(){
     const roleId   = $('#role').val();
     const clientId = $('#client').val();
+
+    const roleSelect = $('#role');
+
+    if (clientId != 1 && clientId != undefined) {
+        roleSelect.find('option[value="1"]').hide(); 
+        
+        let availableRole = roleSelect.find('option:not(:disabled):not([value="1"])').first().val();
+        
+        if (availableRole && roleSelect.val() === "1") {
+            roleSelect.val(availableRole); 
+        }
+    } else {
+        roleSelect.find('option[value="1"]').show(); 
+    }
+
     $.get(
         "privileges/getprivilegesbyclientandroleid/"+ roleId + "/" + clientId,
         function (response) {
@@ -196,15 +211,12 @@ window.getSelectedValues = function () {
         actions: groupedData[slug].actions,
     }));
 
-    // console.log(groupedArray);
-
     addPrivilegesToTable(selectedRole, selectedClient, groupedArray);
 };
 
 function addPrivilegesToTable(selectedRole, selectedClient, groupedArray) {
     let data        = JSON.stringify(groupedArray);
     let encodedData = encodeURIComponent(data);
-    console.log(encodedData)
     $.get(
         "privileges/addpermission/" + selectedRole + "/" + selectedClient + "/" + encodedData ,
         function (response) {

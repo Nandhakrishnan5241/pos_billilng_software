@@ -40,7 +40,8 @@ Route::prefix('bsadmin/category')->middleware('auth')->group(function(){
 Route::post('/changepassword', [AuthController::class, 'changePassword'])->middleware('auth')->name('changepassword');
 
 Route::get('test',function(){
-    return view('test');
+    dd('g');
+    return view('errors.error_404');
 });
 
 require __DIR__.'/auth.php';

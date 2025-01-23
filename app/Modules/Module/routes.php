@@ -74,5 +74,10 @@ Route::prefix('bsadmin/privileges')->middleware('auth')->group(function () {
 });
 
 Route::fallback(function () {
-    return response()->json(['message' => 'Route not found'], 404);
+    return redirect()->route('error.404'); // Redirect to a named route
 });
+
+Route::get('/error-404', function () {
+    return view('errors.error_404');
+})->name('error.404');
+

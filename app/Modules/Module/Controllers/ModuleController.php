@@ -4,6 +4,7 @@ namespace App\Modules\Module\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Module\Models\Module;
+use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -52,7 +53,10 @@ class ModuleController extends Controller
             $name      = $request->input('name');
             $dashboard = $request->input('dashboard');
             $active    = $request->input('active');
-            $slug    = strtolower(str_replace(' ', '', $name));
+            $slug      = strtolower(str_replace(' ', '', $name));
+            $icon      = $slug.'.png';
+            $url       = $slug;
+            $tab       = 'administration';
 
             $lastRecord             = Module::latest('id')->first();
             if (!empty($lastRecord)) {
@@ -62,14 +66,24 @@ class ModuleController extends Controller
             }
             $order   = ($request->input('order') ?? ++$lastRecordOrderCount);
 
+            $moduleIds  = Module::pluck('id')->toArray();
+           
+
             $module              = new Module();
             $module->name        = $name;
             $module->slug        = $slug;
+            $module->icon        = $icon;
+            $module->url         = $url;
+            $module->tab         = $tab;
             $module->order       = $order;
             $module->dashboard   = $dashboard;
             $module->active      = $active;
             $module->save();
+            
+            array_push($moduleIds, $module->id);
 
+            $requestResponse = ClientService::syncPermissionsToClient($moduleIds);
+            $requestResponse = ClientService::syncModulesToClient(1, $moduleIds);
             return response()->json([
                 'status' => '1',
                 'message' => 'Data Saved Successfully...',

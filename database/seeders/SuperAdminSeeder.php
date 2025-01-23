@@ -5,6 +5,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Modules\Clients\Models\Client;
+use App\Modules\Module\Models\Module;
+use App\Services\ClientService;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +19,11 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
+        $modulesIds = Module::pluck('id')->toArray();
+        if(empty($modulesIds)){
+            $this->command->info('Modules table are empty so seed the modules data first');
+            die;
+        }
         $client= Client::where('is_superadmin',1)->first();
         if(empty($client)){
             $client = Client::create([
@@ -42,7 +49,7 @@ class SuperAdminSeeder extends Seeder
         }
 
         $user         = User::where('email', 'superadmin@gmail.com')->first();
-        $password     =  '12345678';
+        $password     = '12345678';
         $hashPassword = Hash::make($password);
         if (empty($user)) {
             $user = User::create([
@@ -64,6 +71,8 @@ class SuperAdminSeeder extends Seeder
         else{
             echo "user alreaady exists...";
         }
+        $requestResponse = ClientService::syncPermissionsToClient($modulesIds);
+        $requestResponse = ClientService::syncModulesToClient($client->id, $modulesIds);
         // php artisan db:seed --class=SuperAdminSeeder
     
     }

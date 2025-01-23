@@ -25,8 +25,9 @@ class PrevilegeController extends Controller
 
         $permissions        = Permission::get();
         $roles              = Role::get();
-        
-        $modules            = Module::get();
+
+        // $modules            = Module::get();
+        $modules            = Module::where('dashboard', 1)->get();
         $clients            = Client::get();
         if (!auth()->user()->hasRole('superadmin')) {
             $roles              = $roles->slice(1);
@@ -60,13 +61,15 @@ class PrevilegeController extends Controller
 
     public function addPermissionToRole($roleId, $clientId, $groupedData)
     {
+        $user = Auth::user();
         if ($clientId != 0) {
             $data = json_decode($groupedData, true);
-            $ids  = array_map(function ($item) {
+            $moduleIds  = array_map(function ($item) {
                 return $item['module']['id'];
             }, $data);
-            $requestResponse = ClientService::syncPermissionsToClient($ids);
-            $requestResponse = ClientService::syncModulesToClient($clientId, $ids);
+            $requestResponse = ClientService::syncEnabledPermissionsToClient($roleId, $clientId, $moduleIds, $data);
+            // $requestResponse = ClientService::syncPermissionsToClient($ids);
+            // $requestResponse = ClientService::syncModulesToClient($clientId, $ids);
             if ($requestResponse) {
                 return response()->json([
                     'status' => '1',
@@ -83,8 +86,6 @@ class PrevilegeController extends Controller
         } else {
             try {
                 $decodeData = json_decode($groupedData, true);
-                $role       = Role::findOrFail($roleId);
-
                 $permissions = [];
                 foreach ($decodeData as $data) {
                     $moduleSlug = $data['module']['slug'];
@@ -96,7 +97,12 @@ class PrevilegeController extends Controller
                         $permissions[]  = $permissionName;
                     }
                 }
-                $role->syncPermissions($permissions);
+                $moduleIds  = array_map(function ($item) {
+                    return $item['module']['id'];
+                }, $decodeData);
+                $requestResponse = ClientService::syncEnabledPermissionsToClient($roleId, $user->client_id, $moduleIds, $decodeData);
+                // $requestResponse = ClientService::syncPermissionsToClient($moduleIds);
+                // $requestResponse = ClientService::syncModulesToClient($user->client_id, $moduleIds);
 
                 return response()->json([
                     'status' => '1',
@@ -128,6 +134,7 @@ class PrevilegeController extends Controller
         }
         return $permissions;
     }
+
     /**----------------get privileges by client id currently not use in this function-------------- */
     public static function getPrivilegesByClientID($clientId)
     {
@@ -184,26 +191,22 @@ class PrevilegeController extends Controller
     public function getPrivilegesByClientAndRoldID($roleId, $clientId)
     {
         try {
-            if($clientId == 0){
+
+            if ($clientId == 0) {
                 $user = Auth::user();
                 $clientId = $user->client_id;
             }
             // PrevilegeController::getPrivilegesByRoleID($roleId);
             // PrevilegeController::getPrivilegesByClientID($clientId);
-            $modules = Module::get();
-            $selectedModulesmodules = DB::table('client_has_modules')
-                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'client_has_modules.client_id')
-                ->join('modules', 'modules.id', '=', 'client_has_modules.module_id')
-                ->where('model_has_roles.role_id', $roleId)
-                ->where('client_has_modules.client_id', $clientId)
-                ->select('modules.*')
-                ->get();
-
-            $selectedModulesmodules         = json_decode(json_encode($selectedModulesmodules), true);
-            if($clientId == 1 && $roleId == 1){
-                $clientHasModule = PrevilegeController::getPermissionsByRoleId($roleId);
-            }else{
-                $clientHasModule    = PrevilegeController::getPermissionModulesForClient($selectedModulesmodules);
+            if (auth()->user()->hasRole('superadmin')) {
+                $modules = Module::get();
+            } else {
+                $modules   = Module::where('dashboard', 1)->get();
+            }
+            if ($clientId == 1 && $roleId == 1) {
+                $clientHasModule    = PrevilegeController::getPermissionsByRoleId($roleId);
+            } else {
+                $clientHasModule    = PrevilegeController::getModulesByEnabledActions($roleId, $clientId);
             }
 
             return response()->json([
@@ -218,5 +221,43 @@ class PrevilegeController extends Controller
                 'data' => [],
             ]);
         }
+    }
+
+    public static function getModulesByEnabledActions($roleId, $clientId)
+    {
+        $modulesWithPermissions = DB::table('client_has_modules')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'client_has_modules.client_id')
+            ->join('modules', 'modules.id', '=', 'client_has_modules.module_id')
+            ->leftJoin('role_has_permissions', 'role_has_permissions.role_id', '=', 'model_has_roles.role_id')
+            ->leftJoin('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->where('model_has_roles.role_id', $roleId)
+            ->where('client_has_modules.client_id', $clientId)
+            ->select(
+                'modules.id',
+                'modules.name',
+                'modules.slug',
+                'modules.icon',
+                'modules.url',
+                'modules.tab',
+                'modules.order',
+                'modules.active',
+                'modules.dashboard',
+                'modules.created_at',
+                'modules.updated_at',
+                'modules.deleted_at',
+                'permissions.name as permission'
+            )
+            ->get();
+
+        $flattenedActions = [];
+
+        foreach ($modulesWithPermissions as $moduleData) {
+            if ($moduleData->permission) {
+                $flattenedActions[] = $moduleData->permission;
+            }
+        }
+        $flattenedActions = collect($flattenedActions)->unique()->sort()->values();
+
+        return $flattenedActions;
     }
 }
